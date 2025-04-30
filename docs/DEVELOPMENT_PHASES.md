@@ -86,7 +86,7 @@
 
 1. **React 生态兼容性**
    - React 18.2.0 与 React DOM 18.2.0 版本必须匹配
-   - 使用 @fluentui/react 9.x 版本（不要使用 8.x），确保与 React 18 的 Concurrent Mode 兼容
+    - 使用 @chakra-ui/react 2.8.2 版本，确保与 React 18 的 Concurrent Mode 兼容
    - 所有 React 组件库必须兼容 React 18 的特性和生命周期
 
 2. **动画与可视化兼容性**
@@ -97,7 +97,7 @@
 3. **Electron 与原生模块兼容性**
    - Electron 28.2.7 需与 sqlite3 5.1.7 搭配使用
    - 必须使用 electron-rebuild 确保原生模块在不同平台的正确构建
-   - 注意 electron-builder 和 electron-forge 版本兼容性
+   - 注意 electron-builder 和 electron-forge 5.2.4 版本兼容性
 
 4. **TypeScript 相关兼容性**
    - TypeScript 4.9.5 与所有依赖库类型定义必须兼容
@@ -146,7 +146,7 @@
 
 **开发任务：**
 1. 实现应用主界面布局，包括侧边栏、内容区域和顶部导航
-2. 实现基础 UI 组件库，整合 Fluent UI 组件
+2. 实现基础 UI 组件库，整合 Chakra UI 组件
 3. 设计并实现主题系统，支持浅色/深色模式
 4. 集成 framer-motion 实现基础动画系统
 5. 实现多语言支持框架 (react-i18next)
@@ -168,10 +168,10 @@
 - 确保本阶段完成后，程序能够正常运行且不出现明显的错误或异常。
 
 **技术要点与依赖兼容性：**
-- 使用 @fluentui/react 9.x 版本构建 UI 组件，确保与 React 18 兼容
-- 使用 styled-components 6.x 实现主题支持，遵循"主题提供器"模式
+- 使用 @chakra-ui/react 2.8.2 版本构建 UI 组件，确保与 React 18 兼容
+- 使用 Chakra UI 内置的主题系统和 styled-components 6.x 实现主题支持
 - framer-motion 7.10.3 配置动画系统，注意在 React 18 Strict Mode 下正确使用 AnimatePresence
-- 使用 react-i18next 13.x + i18next 23.x 实现国际化，确保支持中、英、日三种语言
+- 使用 react-i18next 13.0 + i18next 23.1 实现国际化，确保支持中、英、日三种语言
 - 使用 React Context API 和 Redux Toolkit 1.9.x 实现状态管理，注意两者边界和使用场景
 - 实现 React Router 6.x 路由系统，确保 React 18 兼容性
 - 集成 react-hot-toast 2.4.1 实现交互反馈，确保与主题系统兼容
@@ -247,7 +247,7 @@
 
 **技术要点与依赖兼容性：**
 - 使用 React 函数式组件和 Hooks 实现表单，确保与 TypeScript 类型系统完全集成
-- 使用 @fluentui/react 9.x 的表单组件，确保表单验证完整
+- 使用 @chakra-ui/react 2.8.2 的表单组件，确保表单验证完整
 - 实现分页加载机制，避免一次性加载过多数据，确保界面响应流畅
 - 搜索和过滤功能应实现防抖处理，避免频繁数据库查询
 - 确保主进程中的数据访问层与渲染进程的 UI 组件之间有明确的 IPC 通信边界
@@ -289,7 +289,7 @@
 - 确保本阶段完成后，程序能够正常运行且不出现明显的错误或异常。
 
 **技术要点与依赖兼容性：**
-- 使用 Marked 11.2.0 处理富文本的 Markdown 格式，结合 DOMPurify 3.0.8 确保 XSS 防护
+- 使用 Marked 11.2.0 处理富文本的 Markdown 格式
 - 时间轴组件应基于 framer-motion 实现流畅的滚动和展开效果
 - 富文本编辑器需确保与 React 18 兼容，避免使用过时的编辑器库
 - 搜索功能应实现全文搜索能力，优化数据库查询性能
@@ -440,7 +440,7 @@
 **技术要点与依赖兼容性：**
 - 分析功能依赖 LLM 服务、数据库和可视化服务，确保三者正确集成
 - 分析过程应在后台线程中执行，避免阻塞 UI 线程
-- 结果渲染使用 Marked 11.2.0 和 DOMPurify 3.0.8 确保安全展示
+- 结果渲染使用 Marked 11.2.0
 - 分析历史记录应实现分页和懒加载，处理大量历史数据
 - 实现分析任务的状态管理，包括进行中、已完成、失败等状态
 - 手动分析模式应提供良好的提示和引导，优化用户体验

@@ -27,7 +27,7 @@ RelaScope Insight is a powerful desktop application designed to help users build
 - **Frontend**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
 - **Backend**: SQLite 5.1.7, Node.js 18.17.1
 - **API Communication**: Axios 1.6.7
-- **Text Processing**: Marked 11.2.0
+- **Text Processing**: Marked 11.2.0, DOMPurify 3.0.8
 
 ## 🚀 Getting Started
 
@@ -86,7 +86,7 @@ RelaScope Insight 是一款功能强大的桌面应用程序，旨在帮助用�
 - **前端**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
 - **后端**: SQLite 5.1.7, Node.js 18.17.1
 - **API通信**: Axios 1.6.7
-- **文本处理**: Marked 11.2.0
+- **文本处理**: Marked 11.2.0, DOMPurify 3.0.8
 
 ## 🚀 快速开始
 
@@ -145,7 +145,7 @@ RelaScope Insightは、ユーザーが個人情報リポジトリを構築・管
 - **フロントエンド**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
 - **バックエンド**: SQLite 5.1.7, Node.js 18.17.1
 - **API通信**: Axios 1.6.7
-- **テキスト処理**: Marked 11.2.0
+- **テキスト処理**: Marked 11.2.0, DOMPurify 3.0.8
 
 ## 🚀 始め方
 
@@ -204,4 +204,5 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 - [Electron](https://www.electronjs.org/)
 - [React](https://reactjs.org/)
 - [SQLite](https://www.sqlite.org/)
+- [Fluent UI](https://developer.microsoft.com/en-us/fluentui)
 - [Font Awesome](https://fontawesome.com/)
