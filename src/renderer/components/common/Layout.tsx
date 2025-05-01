@@ -68,7 +68,7 @@ export const Layout: React.FC<LayoutProps> = ({
                   {t('common.emptyContent')}
                 </Text>
                 <Text color={emptyStateTextColor} mb={4}>
-                  选择下方的选项快速创建内容
+                  {t('common.quickStartGuide')}
                 </Text>
                 
                 <Flex justify="center" wrap="wrap" gap={4}>
@@ -78,7 +78,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     variant="outline"
                     onClick={() => handleCreateItem('profile')}
                   >
-                    创建档案
+                    {t('common.createProfile')}
                   </Button>
                   <Button 
                     leftIcon={<FontAwesomeIcon icon={faCommentDots} />} 
@@ -86,7 +86,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     variant="outline"
                     onClick={() => handleCreateItem('quote')}
                   >
-                    添加语录
+                    {t('common.addQuote')}
                   </Button>
                   <Button 
                     leftIcon={<FontAwesomeIcon icon={faHistory} />} 
@@ -94,7 +94,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     variant="outline"
                     onClick={() => handleCreateItem('experience')}
                   >
-                    记录经历
+                    {t('common.recordExperience')}
                   </Button>
                 </Flex>
               </VStack>

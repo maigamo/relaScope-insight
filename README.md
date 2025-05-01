@@ -78,123 +78,132 @@ This project follows a structured development approach with clearly defined phas
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
----
+## 🌟 项目概述 / Project Overview / プロジェクト概要
 
-<!-- Chinese Content -->
-## 📋 中文
+RelaScope Insight是一款桌面应用程序，帮助用户记录、分析和可视化他们的人际关系和互动。通过跟踪谈话、经历和情感反应，用户可以获得对其社交动态的更深入了解。
 
-### 📖 简介
+RelaScope Insight is a desktop application that helps users record, analyze, and visualize their interpersonal relationships and interactions. By tracking conversations, experiences, and emotional responses, users can gain deeper insights into their social dynamics.
 
-**RelaScopeInsight** 是一款使用Electron、React和TypeScript构建的功能强大的桌面应用程序，它通过先进的分析和大型语言模型帮助您管理、可视化您的个人关系网络并获得洞察。
+RelaScope Insightは、ユーザーが対人関係やインタラクションを記録、分析、視覚化するのを支援するデスクトップアプリケーションです。会話、経験、感情的な反応を追跡することで、ユーザーは自分のソーシャルダイナミクスについてより深い洞察を得ることができます。
 
-### ✨ 特性
+## 🚀 功能 / Features / 機能
 
-- 🏗️ **模块化架构**：主进程和渲染进程的清晰分离
-- 🎨 **现代界面**：使用Chakra UI构建美观、响应式的界面
-- 🌍 **多语言支持**：支持英文、中文和日文
-- 🌓 **主题系统**：支持亮色和暗色模式
-- 📊 **数据可视化**：交互式图表和关系映射
-- 🤖 **LLM集成**：利用AI获取更深入的关系洞察
+- 📝 个人档案管理 / Profile Management / プロファイル管理
+- 💬 对话和引用跟踪 / Conversation and Quote Tracking / 会話と引用の追跡
+- 📊 六角模型分析 / Hexagon Model Analysis / 六角形モデル分析
+- 🔄 历史记录和模式识别 / History and Pattern Recognition / 履歴とパターン認識
+- 🌙 暗色/亮色主题 / Dark/Light Themes / ダーク/ライトテーマ
+- 🌐 多语言支持 / Multilingual Support / 多言語サポート
 
-### 🚀 开始使用
+## 📸 屏幕截图 / Screenshots / スクリーンショット
 
-#### 前提条件
+![Screenshot1](assets/screenshot1.png)
+![Screenshot2](assets/screenshot2.png)
 
-- Node.js (v14+)
-- npm或yarn
-- Git
+## 🛠️ 技术栈 / Tech Stack / 技術スタック
 
-#### 安装
+- Electron
+- React
+- TypeScript
+- SQLite
+- Chakra UI
+
+## 🔧 安装 / Installation / インストール
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/relascope-insight.git
-
-# 进入项目目录
-cd relascope-insight
-
-# 安装依赖
-npm install
-```
-
-#### 运行应用
-
-```bash
-# 启动开发服务器
-npm run dev
-
-# 在另一个终端，启动Electron应用
-npm run electron:dev
-
-# 或使用组合命令
-npm run app:dev
-```
-
-### 🔧 开发
-
-本项目遵循结构化的开发方法，具有明确定义的阶段，详见`docs/DEVELOPMENT_PHASES.md`文件。
-
-### 📝 许可证
-
-本项目基于MIT许可证 - 有关详细信息，请参阅LICENSE文件。
-
----
-
-<!-- Japanese Content -->
-## 📋 日本語
-
-### 📖 はじめに
-
-**RelaScopeInsight**は、Electron、React、TypeScriptで構築された強力なデスクトップアプリケーションで、高度な分析と大規模言語モデルを使用して、個人的な人間関係ネットワークの管理、視覚化、洞察を得るのに役立ちます。
-
-### ✨ 特徴
-
-- 🏗️ **モジュラーアーキテクチャ**：メインプロセスとレンダラープロセスの明確な分離
-- 🎨 **モダンUI**：Chakra UIを使用した美しく、レスポンシブなインターフェース
-- 🌍 **多言語サポート**：英語、中国語、日本語に対応
-- 🌓 **テーマシステム**：ライトモードとダークモードをサポート
-- 📊 **データ可視化**：インタラクティブなチャートと関係マッピング
-- 🤖 **LLM統合**：AIを活用してより深い人間関係の洞察を得る
-
-### 🚀 はじめ方
-
-#### 前提条件
-
-- Node.js (v14+)
-- npm または yarn
-- Git
-
-#### インストール
-
-```bash
+# Clone repository
 # リポジトリをクローン
 git clone https://github.com/yourusername/relascope-insight.git
 
-# プロジェクトディレクトリに移動
+# 进入目录
+# Enter directory
+# ディレクトリに入る
 cd relascope-insight
 
+# 安装依赖
+# Install dependencies
 # 依存関係をインストール
 npm install
-```
 
-#### アプリケーションの実行
-
-```bash
-# 開発サーバーを起動
+# 启动开发环境
+# Start development environment
+# 開発環境を起動
 npm run dev
 
-# 別のターミナルで、Electronアプリを起動
-npm run electron:dev
-
-# または組み合わせたコマンドを使用
-npm run app:dev
+# 构建应用
+# Build application
+# アプリケーションをビルド
+npm run build
 ```
 
-### 🔧 開発
+## 📊 项目进度 / Project Progress / プロジェクトの進捗
 
-このプロジェクトは、`docs/DEVELOPMENT_PHASES.md`ファイルに概説されている明確に定義された段階を持つ構造化された開発アプローチに従います。
+### ✅ 阶段一：项目初始化与基础架构搭建 / Stage One: Project Initialization and Basic Architecture / ステージ1：プロジェクトの初期化と基本アーキテクチャの構築
+- 完成项目脚手架搭建，使用Electron+React+TypeScript技术栈
+- Completed project scaffolding using Electron+React+TypeScript stack
+- Electron+React+TypeScript技術スタックを使用したプロジェクトスケルトンの構築
 
-### 📝 ライセンス
+- 实现了主进程和渲染进程的基本通信机制
+- Implemented basic communication between main and renderer processes
+- メインプロセスとレンダラープロセス間の基本的な通信メカニズムを実装
+
+- 建立了基础的应用框架和文件结构
+- Established fundamental application framework and file structure
+- 基本的なアプリケーションフレームワークとファイル構造を確立
+
+### ✅ 阶段二：用户界面框架与组件库开发 / Stage Two: UI Framework and Component Library Development / ステージ2：ユーザーインターフェースフレームワークとコンポーネントライブラリの開発
+- 实现了现代化的界面布局，包括响应式侧边栏、内容区和顶部导航
+- Implemented modern interface layout with responsive sidebar, content area and top navigation
+- レスポンシブサイドバー、コンテンツエリア、トップナビゲーションを備えた現代的なインターフェースレイアウトを実装
+
+- 开发了主题系统，支持亮色/暗色模式切换
+- Developed theme system with light/dark mode support
+- ライト/ダークモードをサポートするテーマシステムを開発
+
+- 实现了国际化多语言支持
+- Implemented internationalization with multilingual support
+- 多言語サポートによる国際化を実装
+
+- 建立了全局状态管理系统
+- Established global state management system
+- グローバルステート管理システムを確立
+
+### ✅ 阶段三：数据库设计与存储系统实现 / Stage Three: Database Design and Storage System Implementation / ステージ3：データベース設計とストレージシステムの実装
+- 设计了SQLite数据库模型，包括个人档案、引用、经历等核心实体
+- Designed SQLite database models including core entities like profiles, quotes, and experiences
+- プロファイル、引用、経験などの主要エンティティを含むSQLiteデータベースモデルを設計
+
+- 实现了完整的数据访问层，采用DAO设计模式
+- Implemented complete data access layer using DAO design pattern
+- DAOデザインパターンを使用した完全なデータアクセス層を実装
+
+- 开发了数据库管理工具，支持备份和恢复功能
+- Developed database management tools with backup and restore features
+- バックアップと復元機能を備えたデータベース管理ツールを開発
+
+- 建立了主进程和渲染进程之间的安全通信机制
+- Established secure communication mechanism between main and renderer processes
+- メインプロセスとレンダラープロセス間の安全な通信メカニズムを確立
+
+### 🚧 阶段四：个人档案模块开发 (进行中) / Stage Four: Profile Module Development (In Progress) / ステージ4：プロファイルモジュールの開発（進行中）
+- 设计个人档案管理界面
+- Designing profile management interface
+- プロファイル管理インターフェースを設計中
+
+- 实现档案的创建、编辑和删除功能
+- Implementing profile creation, editing and deletion functions
+- プロファイルの作成、編集、削除機能を実装中
+
+- 开发档案搜索和筛选系统
+- Developing profile search and filtering system
+- プロファイル検索とフィルタリングシステムを開発中
+
+## 📄 许可 / License / ライセンス
+
+本项目基于MIT许可证 - 有关详细信息，请参阅LICENSE文件。
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 このプロジェクトはMITライセンスの下でライセンスされています - 詳細についてはLICENSEファイルを参照してください。
 
@@ -213,6 +222,24 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 貢献は歓迎します！参加方法については[貢献ガイドライン](CONTRIBUTING.md)をお読みください。
 
 ## 🙏 致谢 / Acknowledgements / 謝辞
+
+- [Electron](https://www.electronjs.org/)
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Chakra UI](https://chakra-ui.com/)
+- [SQLite](https://www.sqlite.org/)
+
+## 🌐 多言語サポート / Multilingual Support / 多言語サポート
+
+- 🇺🇸 English
+- 🇨🇳 中文 (Chinese)
+- 🇯🇵 日本語 (Japanese)
+
+## 👥 貢献 / Contributing / 貢献
+
+歓迎貢献！[貢献ガイドライン](CONTRIBUTING.md)をお読みください。
+
+## 🙏 謝辞 / Acknowledgements / 謝辞
 
 - [Electron](https://www.electronjs.org/)
 - [React](https://reactjs.org/)

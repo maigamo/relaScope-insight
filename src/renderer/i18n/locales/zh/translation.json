@@ -30,7 +30,11 @@
     "collapse": "收起",
     "expand": "展开",
     "emptyContent": "暂无内容",
-    "emptyContentTip": "点击右上角的\"创建\"按钮开始添加内容"
+    "emptyContentTip": "点击右上角的\"创建\"按钮开始添加内容",
+    "quickStartGuide": "选择下方的选项快速创建内容",
+    "createProfile": "创建档案",
+    "addQuote": "添加语录",
+    "recordExperience": "记录经历"
   },
   "navigation": {
     "dashboard": "仪表盘",

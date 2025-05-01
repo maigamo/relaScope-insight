@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { setupIPCHandlers } from './ipc/handlers';
+import { DatabaseService } from './services/database/DatabaseService';
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -58,12 +59,31 @@ const setupHandlers = () => {
   setupIPCHandlers();
 };
 
+// 初始化数据库
+const initializeDatabase = async () => {
+  try {
+    console.log('正在初始化数据库...');
+    const dbService = DatabaseService.getInstance();
+    await dbService.initialize();
+    console.log('数据库初始化完成');
+  } catch (error) {
+    console.error('数据库初始化失败:', error);
+  }
+};
+
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.whenReady().then(() => {
-  console.log('应用准备就绪，即将设置IPC处理器和创建窗口');
+app.whenReady().then(async () => {
+  console.log('应用准备就绪，初始化数据库和设置IPC处理器');
+  
+  // 先初始化数据库
+  await initializeDatabase();
+  
+  // 设置IPC处理器
   setupHandlers();
+  
+  // 创建主窗口
   createWindow();
 });
 

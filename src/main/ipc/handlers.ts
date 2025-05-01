@@ -6,6 +6,8 @@ import {
   DB_CHANNELS
 } from '../../common/constants/ipc';
 import { configService } from '../services/config';
+import { DatabaseService } from '../services/database/DatabaseService';
+import { DatabaseIpcHandler } from '../services/database/DatabaseIpcHandler';
 
 /**
  * 配置IPC通信处理器
@@ -93,10 +95,20 @@ export function setupIPCHandlers() {
   });
 
   // 数据库相关处理器
+  // 使用全新的DatabaseIpcHandler替代旧的处理方式
+  setupDatabaseHandlers();
+}
+
+/**
+ * 配置数据库相关处理器
+ */
+function setupDatabaseHandlers() {
+  // 保留旧的处理器以兼容旧代码
   ipcMain.handle(DB_CHANNELS.INITIALIZE, async () => {
     try {
-      // TODO: 实际的数据库初始化逻辑将在数据库服务中实现
-      console.log('初始化数据库');
+      // 初始化数据库服务
+      const dbService = DatabaseService.getInstance();
+      await dbService.initialize();
       return { success: true } as IPCResponse;
     } catch (error: any) {
       console.error(`初始化数据库失败: ${error.message}`);
@@ -110,9 +122,11 @@ export function setupIPCHandlers() {
   ipcMain.handle(DB_CHANNELS.EXECUTE_QUERY, 
     async (_, { sql, params }) => {
     try {
-      // TODO: 实际的数据库查询逻辑将在数据库服务中实现
-      console.log(`执行SQL: ${sql}, 参数: ${JSON.stringify(params)}`);
-      return { success: true, data: [] } as IPCResponse;
+      console.log(`执行SQL已被弃用，请使用新的数据库API: ${sql}`);
+      return { 
+        success: false, 
+        error: '此方法已被弃用，请使用新的数据库API' 
+      } as IPCResponse;
     } catch (error: any) {
       console.error(`执行SQL失败: ${error.message}`);
       return { 
@@ -121,4 +135,8 @@ export function setupIPCHandlers() {
       } as IPCResponse;
     }
   });
+  
+  // 注册新的数据库IPC处理器，使用专用的处理类
+  const databaseIpcHandler = DatabaseIpcHandler.getInstance();
+  databaseIpcHandler.registerHandlers();
 } 

@@ -29,7 +29,13 @@
     "error": "An error occurred",
     "noData": "No data available",
     "collapse": "Collapse",
-    "expand": "Expand"
+    "expand": "Expand",
+    "emptyContent": "No content yet",
+    "emptyContentTip": "Click \"Create\" in the top right to get started",
+    "quickStartGuide": "Choose from the options below to get started",
+    "createProfile": "Create Profile",
+    "addQuote": "Add Quote",
+    "recordExperience": "Record Experience"
   },
   "navigation": {
     "dashboard": "Dashboard",

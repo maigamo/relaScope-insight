@@ -29,7 +29,13 @@
     "actions": "アクション",
     "noData": "データがありません",
     "collapse": "折りたたむ",
-    "expand": "展開する"
+    "expand": "展開する",
+    "emptyContent": "コンテンツなし",
+    "emptyContentTip": "右上の「作成」ボタンをクリックして始めてください",
+    "quickStartGuide": "以下のオプションから選択して開始してください",
+    "createProfile": "プロファイル作成",
+    "addQuote": "引用を追加",
+    "recordExperience": "経験を記録"
   },
   "navigation": {
     "dashboard": "ダッシュボード",
