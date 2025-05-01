@@ -1,0 +1,101 @@
+{
+  "app": {
+    "title": "RelaScopeInsight",
+    "subtitle": "Gain valuable insights into your personal relationship network",
+    "version": "Current Version: {{version}}",
+    "loading": "Loading...",
+    "welcome": "Welcome to RelaScope Insight"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noData": "No data available",
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "profiles": "Profiles",
+    "quotes": "Quotes",
+    "experiences": "Experiences",
+    "analysis": "Analysis",
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "dashboard": {
+    "recentProfiles": "Recent Profiles",
+    "recentQuotes": "Recent Quotes",
+    "recentExperiences": "Recent Experiences",
+    "recentAnalysis": "Recent Analysis",
+    "quickActions": "Quick Actions",
+    "statistics": "Statistics",
+    "welcome": "Welcome to RelaScopeInsight",
+    "quickStart": "Quick Start"
+  },
+  "settings": {
+    "appearance": "Appearance",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "systemMode": "Use System Theme",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "account": "Account",
+    "advanced": "Advanced Settings",
+    "database": "Database",
+    "backup": "Backup",
+    "export": "Export",
+    "import": "Import",
+    "reset": "Reset",
+    "llm": "LLM Services",
+    "apiKey": "API Key",
+    "provider": "Provider",
+    "preferences": "Preferences"
+  },
+  "error": {
+    "general": "An error occurred",
+    "retry": "Retry",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "serverError": "Server error",
+    "networkError": "Network error",
+    "timeoutError": "Timeout error"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "profiles": "Profiles",
+    "analysis": "Analysis",
+    "insights": "Insights",
+    "charts": "Charts",
+    "settings": "Settings"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "system": "System Default"
+  },
+  "language": {
+    "chinese": "Chinese",
+    "english": "English",
+    "japanese": "Japanese"
+  }
+} 

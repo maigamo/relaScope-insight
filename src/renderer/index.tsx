@@ -1,15 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './styles/global.css';
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
 
-// React 18 使用的新API
+// 获取根元素
 const container = document.getElementById('root');
-if (container) {
-  const root = ReactDOM.createRoot(container);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-} 
+if (!container) throw new Error('找不到根元素 #root');
+
+// 创建React根实例
+const root = createRoot(container);
+
+// 渲染应用
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+); 

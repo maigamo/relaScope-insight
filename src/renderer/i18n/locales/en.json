@@ -1,0 +1,69 @@
+{
+  "app": {
+    "title": "RelaScopeInsight",
+    "subtitle": "Relationship Insight Analysis Tool"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search...",
+    "noResults": "No results found",
+    "error": "An error occurred",
+    "success": "Operation successful"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "analysis": "Analysis",
+    "profiles": "Profiles",
+    "insights": "Insights",
+    "knowledge": "Knowledge Base",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome to RelaScopeInsight",
+    "recentAnalysis": "Recent Analysis",
+    "quickAccess": "Quick Access",
+    "statistics": "Statistics"
+  },
+  "profiles": {
+    "title": "Profiles",
+    "create": "Create Profile",
+    "import": "Import Profile",
+    "export": "Export Profile",
+    "name": "Name",
+    "category": "Category",
+    "tags": "Tags",
+    "lastModified": "Last Modified"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "new": "New Analysis",
+    "type": "Analysis Type",
+    "results": "Analysis Results",
+    "hexagonModel": "Hexagon Model",
+    "textAnalysis": "Text Analysis",
+    "compareProfiles": "Compare Profiles"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General Settings",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme": "Theme",
+    "database": "Database",
+    "backup": "Backup",
+    "llmSettings": "LLM Settings",
+    "apiKeys": "API Keys",
+    "advanced": "Advanced Settings"
+  },
+  "user": {
+    "profile": "Profile",
+    "logout": "Logout",
+    "preferences": "Preferences"
+  }
+} 

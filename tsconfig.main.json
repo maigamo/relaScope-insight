@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/main/**/*",
+    "src/preload/**/*",
+    "src/common/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+} 

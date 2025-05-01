@@ -1,0 +1,101 @@
+{
+  "app": {
+    "title": "RelaScopeInsight",
+    "subtitle": "パーソナルな人間関係ネットワークについての洞察を得る",
+    "version": "現在のバージョン: {{version}}",
+    "loading": "読み込み中...",
+    "welcome": "RelaScope Insightへようこそ"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並べ替え",
+    "settings": "設定",
+    "profile": "プロフィール",
+    "logout": "ログアウト",
+    "login": "ログイン",
+    "register": "登録",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "confirm": "確認",
+    "actions": "アクション",
+    "noData": "データがありません",
+    "collapse": "折りたたむ",
+    "expand": "展開する"
+  },
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "profiles": "個人情報",
+    "quotes": "引用",
+    "experiences": "経験",
+    "analysis": "分析",
+    "settings": "設定",
+    "help": "ヘルプ"
+  },
+  "dashboard": {
+    "welcome": "RelaScopeInsightへようこそ",
+    "quickStart": "クイックスタート",
+    "recentProfiles": "最近のプロフィール",
+    "recentAnalysis": "最近の分析",
+    "recentQuotes": "最近の引用",
+    "recentExperiences": "最近の経験",
+    "quickActions": "クイックアクション",
+    "statistics": "統計"
+  },
+  "settings": {
+    "appearance": "外観",
+    "language": "言語",
+    "darkMode": "ダークモード",
+    "lightMode": "ライトモード",
+    "systemMode": "システム設定に従う",
+    "notifications": "通知",
+    "privacy": "プライバシー",
+    "account": "アカウント",
+    "advanced": "詳細設定",
+    "database": "データベース",
+    "backup": "バックアップ",
+    "export": "エクスポート",
+    "import": "インポート",
+    "reset": "リセット",
+    "llm": "LLMサービス",
+    "apiKey": "APIキー",
+    "provider": "プロバイダー",
+    "preferences": "環境設定"
+  },
+  "error": {
+    "general": "エラーが発生しました",
+    "retry": "再試行",
+    "notFound": "見つかりません",
+    "unauthorized": "権限がありません",
+    "forbidden": "アクセスが禁止されています",
+    "serverError": "サーバーエラー",
+    "networkError": "ネットワークエラー",
+    "timeoutError": "タイムアウトエラー"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "profiles": "プロフィール",
+    "analysis": "分析",
+    "insights": "インサイト",
+    "charts": "チャート",
+    "settings": "設定"
+  },
+  "theme": {
+    "light": "ライトモード",
+    "dark": "ダークモード",
+    "system": "システム設定に従う"
+  },
+  "language": {
+    "chinese": "中国語",
+    "english": "英語",
+    "japanese": "日本語"
+  }
+} 

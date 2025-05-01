@@ -1,189 +1,202 @@
-# RelaScope Insight 📊🧠
+# 🚀 RelaScopeInsight
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Electron](https://img.shields.io/badge/Electron-28.2.7-47848F.svg)](https://www.electronjs.org/)
-[![React](https://img.shields.io/badge/React-18.2.0-61DAFB.svg)](https://reactjs.org/)
-[![SQLite](https://img.shields.io/badge/SQLite-5.1.7-003B57.svg)](https://www.sqlite.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18.17.1-339933.svg)](https://nodejs.org/)
+<div align="center">
+  <img src="public/assets/logo.png" alt="RelaScopeInsight Logo" width="200"/>
+  <br/>
+  <p>
+    <strong>深入了解您的个人关系网络，获取有价值的洞察</strong>
+  </p>
+</div>
 
-> 🔍 Smart desktop application for personal relationship insights through LLM analysis
+<div align="center">
 
-<details>
-<summary>English</summary>
+[![Electron](https://img.shields.io/badge/Electron-blue?logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Chakra UI](https://img.shields.io/badge/Chakra_UI-319795?logo=chakra-ui&logoColor=white)](https://chakra-ui.com/)
+[![i18next](https://img.shields.io/badge/i18next-26A69A?logo=i18next&logoColor=white)](https://www.i18next.com/)
 
-## 🌟 Overview
+</div>
 
-RelaScope Insight is a powerful desktop application designed to help users build and manage personal information repositories. It leverages integrated Large Language Model (LLM) capabilities to provide deep analysis of individual behavior patterns, communication styles, and potential needs. All data is stored on the user's local computer, ensuring privacy and data sovereignty.
+---
 
-## ✨ Key Features
+<!-- English Content -->
+## 📋 English
 
-- **📋 Structured Information Management**: Efficiently record, organize, and retrieve personal information
-- **🧠 Intelligent Analysis**: Utilize LLMs to analyze collected information and reveal deeper patterns
-- **🔒 Local Data Storage**: Ensures all user data and configuration information is securely stored locally
-- **🖥️ User-Friendly Interface**: Simple and intuitive user interface inspired by Cherry Studio design style
+### 📖 Introduction
 
-## 🛠️ Tech Stack
+**RelaScopeInsight** is a powerful desktop application built with Electron, React, and TypeScript that helps you manage, visualize, and gain insights from your personal relationships network using advanced analytics and Large Language Models.
 
-- **Frontend**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
-- **Backend**: SQLite 5.1.7, Node.js 18.17.1
-- **API Communication**: Axios 1.6.7
-- **Text Processing**: Marked 11.2.0
+### ✨ Features
 
-## 🚀 Getting Started
+- 🏗️ **Modular Architecture**: Clean separation of concerns with main and renderer processes
+- 🎨 **Modern UI**: Built with Chakra UI for a beautiful, responsive interface
+- 🌍 **Multi-language Support**: Available in English, Chinese, and Japanese
+- 🌓 **Theme System**: Light and dark mode support
+- 📊 **Data Visualization**: Interactive charts and relationship mapping
+- 🤖 **LLM Integration**: Leverage AI for deeper relationship insights
 
-### Prerequisites
+### 🚀 Getting Started
 
-- Node.js 18.17.1 or higher
+#### Prerequisites
+
+- Node.js (v14+)
 - npm or yarn
+- Git
 
-### Installation
+#### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/relaScope-insight.git
+git clone https://github.com/yourusername/relascope-insight.git
 
 # Navigate to the project directory
-cd relaScope-insight
+cd relascope-insight
 
 # Install dependencies
 npm install
-
-# Start the application
-npm start
 ```
 
-## 📚 Documentation
+#### Running the Application
 
-For more detailed information, please refer to the following documentation:
+```bash
+# Start the development server
+npm run dev
 
-- [Architecture Documentation](docs/架构.md)
-- [Requirements Design](docs/需求设计.md)
-- [Style Design](docs/风格设计.md)
-- [Development Code Standards](docs/开发代码规范.md)
+# In a separate terminal, start the Electron app
+npm run electron:dev
 
-## 📄 License
+# Or use the combined command
+npm run app:dev
+```
+
+### 🔧 Development
+
+This project follows a structured development approach with clearly defined phases outlined in the `docs/DEVELOPMENT_PHASES.md` file.
+
+### 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-</details>
+---
 
-<details open>
-<summary>中文</summary>
+<!-- Chinese Content -->
+## 📋 中文
 
-## 🌟 概述
+### 📖 简介
 
-RelaScope Insight 是一款功能强大的桌面应用程序，旨在帮助用户建立和管理个人信息库。它利用集成的大型语言模型(LLM)能力，提供对个体行为模式、沟通方式和潜在需求的深度分析。所有数据均存储在用户本地计算机上，确保隐私和数据主权。
+**RelaScopeInsight** 是一款使用Electron、React和TypeScript构建的功能强大的桌面应用程序，它通过先进的分析和大型语言模型帮助您管理、可视化您的个人关系网络并获得洞察。
 
-## ✨ 主要特性
+### ✨ 特性
 
-- **📋 结构化信息管理**: 高效记录、组织和检索个人信息
-- **🧠 智能化分析**: 利用LLM对收集的信息进行分析，揭示深层次模式
-- **🔒 数据本地存储**: 确保所有用户数据和配置信息安全地存储在本地
-- **🖥️ 友好用户界面**: 参考Cherry Studio设计风格的简洁直观界面
+- 🏗️ **模块化架构**：主进程和渲染进程的清晰分离
+- 🎨 **现代界面**：使用Chakra UI构建美观、响应式的界面
+- 🌍 **多语言支持**：支持英文、中文和日文
+- 🌓 **主题系统**：支持亮色和暗色模式
+- 📊 **数据可视化**：交互式图表和关系映射
+- 🤖 **LLM集成**：利用AI获取更深入的关系洞察
 
-## 🛠️ 技术栈
+### 🚀 开始使用
 
-- **前端**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
-- **后端**: SQLite 5.1.7, Node.js 18.17.1
-- **API通信**: Axios 1.6.7
-- **文本处理**: Marked 11.2.0
+#### 前提条件
 
-## 🚀 快速开始
+- Node.js (v14+)
+- npm或yarn
+- Git
 
-### 前提条件
-
-- Node.js 18.17.1 或更高版本
-- npm 或 yarn
-
-### 安装步骤
+#### 安装
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/relaScope-insight.git
+git clone https://github.com/yourusername/relascope-insight.git
 
 # 进入项目目录
-cd relaScope-insight
+cd relascope-insight
 
 # 安装依赖
 npm install
-
-# 启动应用
-npm start
 ```
 
-## 📚 文档
+#### 运行应用
 
-更详细的信息，请参考以下文档：
+```bash
+# 启动开发服务器
+npm run dev
 
-- [架构文档](docs/架构.md)
-- [需求设计](docs/需求设计.md)
-- [风格设计](docs/风格设计.md)
-- [开发代码规范](docs/开发代码规范.md)
+# 在另一个终端，启动Electron应用
+npm run electron:dev
 
-## 📄 许可证
+# 或使用组合命令
+npm run app:dev
+```
 
-本项目采用MIT许可证 - 详情请查看LICENSE文件。
+### 🔧 开发
 
-</details>
+本项目遵循结构化的开发方法，具有明确定义的阶段，详见`docs/DEVELOPMENT_PHASES.md`文件。
 
-<details>
-<summary>日本語</summary>
+### 📝 许可证
 
-## 🌟 概要
+本项目基于MIT许可证 - 有关详细信息，请参阅LICENSE文件。
 
-RelaScope Insightは、ユーザーが個人情報リポジトリを構築・管理するための強力なデスクトップアプリケーションです。統合された大規模言語モデル（LLM）機能を活用して、個人の行動パターン、コミュニケーションスタイル、潜在的なニーズの深い分析を提供します。すべてのデータはユーザーのローカルコンピュータに保存され、プライバシーとデータ主権を確保します。
+---
 
-## ✨ 主な機能
+<!-- Japanese Content -->
+## 📋 日本語
 
-- **📋 構造化情報管理**: 個人情報を効率的に記録、整理、検索
-- **🧠 インテリジェント分析**: LLMを活用して収集した情報を分析し、より深いパターンを明らかに
-- **🔒 ローカルデータストレージ**: すべてのユーザーデータと構成情報がローカルに安全に保存されることを保証
-- **🖥️ ユーザーフレンドリーなインターフェース**: Cherry Studioのデザインスタイルにインスパイアされたシンプルで直感的なユーザーインターフェース
+### 📖 はじめに
 
-## 🛠️ 技術スタック
+**RelaScopeInsight**は、Electron、React、TypeScriptで構築された強力なデスクトップアプリケーションで、高度な分析と大規模言語モデルを使用して、個人的な人間関係ネットワークの管理、視覚化、洞察を得るのに役立ちます。
 
-- **フロントエンド**: Electron 28.2.7, React 18.2.0, Fluent UI 8.121.0
-- **バックエンド**: SQLite 5.1.7, Node.js 18.17.1
-- **API通信**: Axios 1.6.7
-- **テキスト処理**: Marked 11.2.0
+### ✨ 特徴
 
-## 🚀 始め方
+- 🏗️ **モジュラーアーキテクチャ**：メインプロセスとレンダラープロセスの明確な分離
+- 🎨 **モダンUI**：Chakra UIを使用した美しく、レスポンシブなインターフェース
+- 🌍 **多言語サポート**：英語、中国語、日本語に対応
+- 🌓 **テーマシステム**：ライトモードとダークモードをサポート
+- 📊 **データ可視化**：インタラクティブなチャートと関係マッピング
+- 🤖 **LLM統合**：AIを活用してより深い人間関係の洞察を得る
 
-### 前提条件
+### 🚀 はじめ方
 
-- Node.js 18.17.1以上
-- npmまたはyarn
+#### 前提条件
 
-### インストール
+- Node.js (v14+)
+- npm または yarn
+- Git
+
+#### インストール
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/yourusername/relaScope-insight.git
+git clone https://github.com/yourusername/relascope-insight.git
 
 # プロジェクトディレクトリに移動
-cd relaScope-insight
+cd relascope-insight
 
 # 依存関係をインストール
 npm install
-
-# アプリケーションを起動
-npm start
 ```
 
-## 📚 ドキュメント
+#### アプリケーションの実行
 
-より詳細な情報については、以下のドキュメントを参照してください：
+```bash
+# 開発サーバーを起動
+npm run dev
 
-- [アーキテクチャドキュメント](docs/架构.md)
-- [要件設計](docs/需求设计.md)
-- [スタイル設計](docs/风格设计.md)
-- [開発コード標準](docs/开发代码规范.md)
+# 別のターミナルで、Electronアプリを起動
+npm run electron:dev
 
-## 📄 ライセンス
+# または組み合わせたコマンドを使用
+npm run app:dev
+```
 
-このプロジェクトはMITライセンスの下でライセンスされています - 詳細はLICENSEファイルをご覧ください。
+### 🔧 開発
 
-</details>
+このプロジェクトは、`docs/DEVELOPMENT_PHASES.md`ファイルに概説されている明確に定義された段階を持つ構造化された開発アプローチに従います。
+
+### 📝 ライセンス
+
+このプロジェクトはMITライセンスの下でライセンスされています - 詳細についてはLICENSEファイルを参照してください。
 
 ## 🌐 多语言支持 / Multilingual Support / 多言語サポート
 
@@ -203,5 +216,8 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 
 - [Electron](https://www.electronjs.org/)
 - [React](https://reactjs.org/)
+- [Chakra UI](https://chakra-ui.com/)
 - [SQLite](https://www.sqlite.org/)
-- [Font Awesome](https://fontawesome.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [i18next](https://www.i18next.com/)
+- [React Icons](https://react-icons.github.io/react-icons/)

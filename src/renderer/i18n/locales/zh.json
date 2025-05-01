@@ -1,0 +1,69 @@
+{
+  "app": {
+    "title": "RelaScopeInsight",
+    "subtitle": "关系洞察分析工具"
+  },
+  "common": {
+    "loading": "加载中...",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "search": "搜索...",
+    "noResults": "没有找到结果",
+    "error": "发生错误",
+    "success": "操作成功"
+  },
+  "navigation": {
+    "dashboard": "仪表盘",
+    "analysis": "分析",
+    "profiles": "用户画像",
+    "insights": "洞察",
+    "knowledge": "知识库",
+    "settings": "设置"
+  },
+  "dashboard": {
+    "welcome": "欢迎使用 RelaScopeInsight",
+    "recentAnalysis": "最近分析",
+    "quickAccess": "快速访问",
+    "statistics": "数据统计"
+  },
+  "profiles": {
+    "title": "用户画像",
+    "create": "创建画像",
+    "import": "导入画像",
+    "export": "导出画像",
+    "name": "名称",
+    "category": "分类",
+    "tags": "标签",
+    "lastModified": "最后修改"
+  },
+  "analysis": {
+    "title": "分析",
+    "new": "新建分析",
+    "type": "分析类型",
+    "results": "分析结果",
+    "hexagonModel": "六边形模型",
+    "textAnalysis": "文本分析",
+    "compareProfiles": "画像比较"
+  },
+  "settings": {
+    "title": "设置",
+    "general": "常规设置",
+    "appearance": "外观",
+    "language": "语言",
+    "theme": "主题",
+    "database": "数据库",
+    "backup": "备份",
+    "llmSettings": "LLM设置",
+    "apiKeys": "API密钥",
+    "advanced": "高级设置"
+  },
+  "user": {
+    "profile": "个人信息",
+    "logout": "退出登录",
+    "preferences": "偏好设置"
+  }
+} 
