@@ -33,4 +33,12 @@ i18n
     },
   });
 
+// 手动刷新翻译的方法
+export const refreshTranslations = () => {
+  // 重新加载资源
+  i18n.reloadResources().then(() => {
+    console.log('翻译资源已重新加载');
+  });
+};
+
 export default i18n; 

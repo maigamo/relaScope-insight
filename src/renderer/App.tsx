@@ -7,8 +7,9 @@ import {
   extendTheme,
   ColorModeScript
 } from '@chakra-ui/react';
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
 import { ConfigService } from './services/ConfigService';
-import { Layout } from './components/common/Layout';
 import { useTranslation } from 'react-i18next';
 import './i18n';
 
@@ -111,7 +112,7 @@ export const App: React.FC = () => {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Layout pageTitle={t('nav.dashboard')} />
+      <RouterProvider router={router} />
     </ChakraProvider>
   );
 }; 

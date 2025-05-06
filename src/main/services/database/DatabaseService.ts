@@ -2,10 +2,16 @@ import { app } from 'electron';
 import { DatabaseManager } from './DatabaseManager';
 import { DatabaseConfig } from './DatabaseConfig';
 import { ProfileDAO } from './dao/ProfileDAO';
+import { ProfileDAOImpl } from './dao/ProfileDAOImpl';
 import { QuoteDAO } from './dao/QuoteDAO';
+import { QuoteDAOImpl } from './dao/QuoteDAOImpl';
 import { ExperienceDAO } from './dao/ExperienceDAO';
-import { AnalysisDAO } from './dao/AnalysisDAO';
 import { HexagonModelDAO } from './dao/HexagonModelDAO';
+import { AnalysisDAO } from './dao/AnalysisDAO';
+import { EnterpriseDAOImpl } from './dao/EnterpriseDAOImpl';
+import { UserDAOImpl } from './dao/UserDAOImpl';
+import { ProjectDAOImpl } from './dao/ProjectDAOImpl';
+import { ProjectMemberDAOImpl } from './dao/ProjectMemberDAOImpl';
 
 /**
  * 数据库服务类
@@ -13,11 +19,11 @@ import { HexagonModelDAO } from './dao/HexagonModelDAO';
  */
 export class DatabaseService {
   private dbManager: DatabaseManager;
-  private profileDAO: ProfileDAO;
-  private quoteDAO: QuoteDAO;
-  private experienceDAO: ExperienceDAO;
-  private analysisDAO: AnalysisDAO;
-  private hexagonModelDAO: HexagonModelDAO;
+  private profileDAO: ProfileDAO | null = null;
+  private quoteDAO: QuoteDAO | null = null;
+  private experienceDAO: ExperienceDAO | null = null;
+  private analysisDAO: AnalysisDAO | null = null;
+  private hexagonModelDAO: HexagonModelDAO | null = null;
   private isInitialized: boolean = false;
   private static instance: DatabaseService | null = null;
 
@@ -32,13 +38,6 @@ export class DatabaseService {
   private constructor() {
     // 获取数据库管理器实例
     this.dbManager = DatabaseManager.getInstance();
-    
-    // 创建各DAO
-    this.profileDAO = new ProfileDAO();
-    this.quoteDAO = new QuoteDAO();
-    this.experienceDAO = new ExperienceDAO();
-    this.analysisDAO = new AnalysisDAO();
-    this.hexagonModelDAO = new HexagonModelDAO();
     
     // 注册应用退出事件
     app.on('before-quit', async () => {
@@ -65,6 +64,13 @@ export class DatabaseService {
       // 初始化数据库
       await this.dbManager.initialize();
       
+      // 初始化完成后创建DAO实例
+      this.profileDAO = ProfileDAOImpl.getInstance();
+      this.quoteDAO = QuoteDAOImpl.getInstance();
+      this.experienceDAO = new ExperienceDAO();
+      this.analysisDAO = new AnalysisDAO();
+      this.hexagonModelDAO = new HexagonModelDAO();
+      
       this.isInitialized = true;
       console.log('数据库服务初始化成功');
     } catch (error) {
@@ -89,22 +95,30 @@ export class DatabaseService {
     }
   }
 
-  // 创建数据库备份
-  public async createBackup(): Promise<string> {
+  // 备份数据库
+  public async backup(): Promise<string> {
     try {
-      return await this.dbManager.createBackup();
+      if (!this.dbManager) {
+        throw new Error('数据库服务未初始化');
+      }
+
+      return this.dbManager.backup();
     } catch (error) {
-      console.error('创建数据库备份时出错:', error);
+      console.error('备份数据库失败:', error);
       throw error;
     }
   }
 
-  // 恢复数据库备份
-  public async restoreFromBackup(backupPath: string): Promise<void> {
+  // 从备份恢复数据库
+  public async restore(backupPath: string): Promise<void> {
     try {
-      await this.dbManager.restoreFromBackup(backupPath);
+      if (!this.dbManager) {
+        throw new Error('数据库服务未初始化');
+      }
+
+      await this.dbManager.restore(backupPath);
     } catch (error) {
-      console.error('恢复数据库备份时出错:', error);
+      console.error('从备份恢复数据库失败:', error);
       throw error;
     }
   }
@@ -121,22 +135,37 @@ export class DatabaseService {
 
   // 获取DAO实例
   public getProfileDAO(): ProfileDAO {
+    if (!this.isInitialized || !this.profileDAO) {
+      throw new Error('数据库服务未初始化，请先调用initialize()');
+    }
     return this.profileDAO;
   }
 
   public getQuoteDAO(): QuoteDAO {
+    if (!this.isInitialized || !this.quoteDAO) {
+      throw new Error('数据库服务未初始化，请先调用initialize()');
+    }
     return this.quoteDAO;
   }
 
   public getExperienceDAO(): ExperienceDAO {
+    if (!this.isInitialized || !this.experienceDAO) {
+      throw new Error('数据库服务未初始化，请先调用initialize()');
+    }
     return this.experienceDAO;
   }
 
   public getAnalysisDAO(): AnalysisDAO {
+    if (!this.isInitialized || !this.analysisDAO) {
+      throw new Error('数据库服务未初始化，请先调用initialize()');
+    }
     return this.analysisDAO;
   }
 
   public getHexagonModelDAO(): HexagonModelDAO {
+    if (!this.isInitialized || !this.hexagonModelDAO) {
+      throw new Error('数据库服务未初始化，请先调用initialize()');
+    }
     return this.hexagonModelDAO;
   }
 } 

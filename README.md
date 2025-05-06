@@ -187,17 +187,25 @@ npm run build
 - メインプロセスとレンダラープロセス間の安全な通信メカニズムを確立
 
 ### 🚧 阶段四：个人档案模块开发 (进行中) / Stage Four: Profile Module Development (In Progress) / ステージ4：プロファイルモジュールの開発（進行中）
-- 设计个人档案管理界面
-- Designing profile management interface
-- プロファイル管理インターフェースを設計中
+- 设计并实现了个人档案管理界面，支持档案列表和详情查看
+- Designed and implemented profile management interface with list and detail views
+- プロファイル管理インターフェースを設計・実装し、リストと詳細ビューをサポート
 
-- 实现档案的创建、编辑和删除功能
-- Implementing profile creation, editing and deletion functions
-- プロファイルの作成、編集、削除機能を実装中
+- 完成了档案的创建、编辑和删除功能
+- Completed profile creation, editing and deletion functions
+- プロファイルの作成、編集、削除機能を完成
 
-- 开发档案搜索和筛选系统
-- Developing profile search and filtering system
-- プロファイル検索とフィルタリングシステムを開発中
+- 优化了IPC通信机制，提高了应用的稳定性和可靠性
+- Optimized IPC communication mechanism, improving application stability and reliability
+- IPCコミュニケーション機構を最適化し、アプリケーションの安定性と信頼性を向上
+
+- 实现了错误处理和边界组件，提升了用户体验
+- Implemented error handling and boundary components for better user experience
+- エラー処理とバウンダリコンポーネントを実装し、ユーザーエクスペリエンスを向上
+
+- 开发进行中：档案搜索和筛选系统
+- In progress: Profile search and filtering system
+- 開発中：プロファイル検索とフィルタリングシステム
 
 ## 📄 许可 / License / ライセンス
 
@@ -248,3 +256,199 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 - [Framer Motion](https://www.framer.com/motion/)
 - [i18next](https://www.i18next.com/)
 - [React Icons](https://react-icons.github.io/react-icons/)
+
+# relaScope-insight 🚀
+
+**relaScope-insight** 是一个用于企业管理和项目协作的现代化应用程序。
+
+## ✨ 功能特性
+
+- 🏢 **企业管理** - 轻松管理企业资源和信息
+- 👥 **用户管理** - 灵活的用户角色和权限系统
+- 📊 **项目管理** - 跟踪和管理多个项目进度
+- 👨‍💻 **团队协作** - 提高团队沟通和工作效率
+- 📱 **跨平台支持** - 适用于Windows、Mac和Linux
+
+## 🛠️ 技术栈
+
+- **Electron** - 跨平台桌面应用程序框架
+- **React** - 用户界面开发
+- **TypeScript** - 强类型JavaScript超集
+- **SQLite** - 本地数据存储
+- **Tailwind CSS** - 实用优先的CSS框架
+
+## 🚀 快速开始
+
+### 先决条件
+
+- Node.js 14.x 或更高版本
+- npm 或 yarn
+
+### 安装
+
+```bash
+# 克隆仓库
+git clone https://github.com/yourusername/relaScope-insight.git
+
+# 进入项目目录
+cd relaScope-insight
+
+# 安装依赖
+npm install
+# 或
+yarn install
+```
+
+### 开发
+
+```bash
+# 启动开发服务器
+npm run dev
+# 或
+yarn dev
+```
+
+### 构建
+
+```bash
+# 为当前平台构建
+npm run build
+# 或
+yarn build
+
+# 为所有平台构建
+npm run build:all
+# 或
+yarn build:all
+```
+
+## 📝 数据库设计
+
+本项目使用SQLite进行本地数据存储，主要数据表包括：
+
+- `enterprises` - 企业信息
+- `users` - 用户信息
+- `projects` - 项目信息
+- `project_members` - 项目成员关系
+- `files` - 文件信息
+- `tags` - 标签信息
+- `activity_logs` - 活动日志
+
+## 🌟 贡献指南
+
+欢迎贡献！请查看我们的[贡献指南](CONTRIBUTING.md)了解更多信息。
+
+## 📄 许可证
+
+本项目基于MIT许可证 - 详情请查看[LICENSE](LICENSE)文件。
+
+---
+
+# relaScope-insight 🚀
+
+**relaScope-insight** は企業管理とプロジェクト協働のためのモダンアプリケーションです。
+
+## ✨ 特徴
+
+- 🏢 **企業管理** - 企業リソースと情報を簡単に管理
+- 👥 **ユーザー管理** - 柔軟なユーザーロールと権限システム
+- 📊 **プロジェクト管理** - 複数のプロジェクト進捗を追跡
+- 👨‍💻 **チーム協働** - チームコミュニケーションと効率を向上
+- 📱 **クロスプラットフォーム対応** - Windows、Mac、Linuxに対応
+
+## 🛠️ 技術スタック
+
+- **Electron** - クロスプラットフォームデスクトップアプリケーションフレームワーク
+- **React** - ユーザーインターフェース開発
+- **TypeScript** - 強く型付けされたJavaScriptのスーパーセット
+- **SQLite** - ローカルデータストレージ
+- **Tailwind CSS** - ユーティリティファーストのCSSフレームワーク
+
+## 🚀 クイックスタート
+
+### 前提条件
+
+- Node.js 14.x以上
+- npmまたはyarn
+
+### インストール
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/yourusername/relaScope-insight.git
+
+# プロジェクトディレクトリに移動
+cd relaScope-insight
+
+# 依存関係をインストール
+npm install
+# または
+yarn install
+```
+
+### 開発
+
+```bash
+# 開発サーバーを起動
+npm run dev
+# または
+yarn dev
+```
+
+### ビルド
+
+```bash
+# 現在のプラットフォーム用にビルド
+npm run build
+# または
+yarn build
+
+# すべてのプラットフォーム用にビルド
+npm run build:all
+# または
+yarn build:all
+```
+
+## 📝 データベース設計
+
+このプロジェクトでは、SQLiteを使用してローカルデータを保存します。主なデータテーブル：
+
+- `enterprises` - 企業情報
+- `users` - ユーザー情報
+- `projects` - プロジェクト情報
+- `project_members` - プロジェクトメンバー関係
+- `files` - ファイル情報
+- `tags` - タグ情報
+- `activity_logs` - アクティビティログ
+
+## 🌟 貢献ガイド
+
+貢献大歓迎！詳細は[貢献ガイド](CONTRIBUTING.md)をご覧ください。
+
+## 📄 ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています - 詳細は[LICENSE](LICENSE)ファイルをご覧ください。
+
+## 🔄 最近更新 / Recent Updates / 最近の更新
+
+### 🛠️ 技术改进 / Technical Improvements / 技術的改善
+
+- ⚡ **增强的IPC通信机制** / **Enhanced IPC Communication** / **強化されたIPC通信**
+  - 重构了预加载脚本，提高了跨进程通信的可靠性
+  - Refactored preload scripts for more reliable cross-process communication
+  - クロスプロセス通信の信頼性向上のためプリロードスクリプトをリファクタリング
+
+- 🔍 **改进的错误诊断** / **Improved Error Diagnostics** / **改善されたエラー診断**
+  - 添加了详细的日志记录和错误边界组件
+  - Added detailed logging and error boundary components
+  - 詳細なログ記録とエラー境界コンポーネントを追加
+
+- 🔒 **更安全的数据处理** / **More Secure Data Handling** / **より安全なデータ処理**
+  - 优化了数据访问层，增强了类型安全
+  - Optimized data access layer with enhanced type safety
+  - タイプセーフティを強化したデータアクセス層の最適化
+
+- 📱 **响应式UI改进** / **Responsive UI Improvements** / **レスポンシブUIの改善**
+  - 优化了表单和列表视图的移动设备支持
+  - Optimized form and list views for mobile device support
+  - モバイルデバイスサポートのためのフォームとリストビューの最適化

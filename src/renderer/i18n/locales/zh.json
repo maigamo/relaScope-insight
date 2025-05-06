@@ -14,7 +14,11 @@
     "search": "搜索...",
     "noResults": "没有找到结果",
     "error": "发生错误",
-    "success": "操作成功"
+    "success": "操作成功",
+    "actions": "操作",
+    "view": "查看",
+    "createDate": "创建日期",
+    "retry": "重试"
   },
   "navigation": {
     "dashboard": "仪表盘",
@@ -38,7 +42,23 @@
     "name": "名称",
     "category": "分类",
     "tags": "标签",
-    "lastModified": "最后修改"
+    "lastModified": "最后修改",
+    "info": "基本信息",
+    "interests": "兴趣爱好",
+    "male": "男",
+    "female": "女",
+    "yearsOld": "岁",
+    "deleteConfirmTitle": "确认删除",
+    "deleteConfirmMessage": "您确定要删除「{{name}}」吗？此操作不可撤销。",
+    "loadError": "加载个人信息失败",
+    "createSuccess": "创建个人信息成功",
+    "createError": "创建个人信息失败",
+    "updateSuccess": "更新个人信息成功",
+    "updateError": "更新个人信息失败",
+    "deleteSuccess": "删除个人信息成功",
+    "deleteError": "删除个人信息失败",
+    "loadIssue": "加载出现问题",
+    "showingSampleData": "显示示例数据"
   },
   "analysis": {
     "title": "分析",

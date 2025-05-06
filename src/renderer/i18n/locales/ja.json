@@ -14,7 +14,11 @@
     "search": "検索...",
     "noResults": "結果が見つかりません",
     "error": "エラーが発生しました",
-    "success": "操作が成功しました"
+    "success": "操作が成功しました",
+    "actions": "アクション",
+    "view": "表示",
+    "createDate": "作成日",
+    "retry": "再試行"
   },
   "navigation": {
     "dashboard": "ダッシュボード",
@@ -38,7 +42,23 @@
     "name": "名前",
     "category": "カテゴリ",
     "tags": "タグ",
-    "lastModified": "最終更新"
+    "lastModified": "最終更新",
+    "info": "基本情報",
+    "interests": "興味・趣味",
+    "male": "男性",
+    "female": "女性",
+    "yearsOld": "歳",
+    "deleteConfirmTitle": "削除の確認",
+    "deleteConfirmMessage": "「{{name}}」を削除してもよろしいですか？この操作は元に戻せません。",
+    "loadError": "プロファイルの読み込みに失敗しました",
+    "createSuccess": "プロファイルが正常に作成されました",
+    "createError": "プロファイルの作成に失敗しました",
+    "updateSuccess": "プロファイルが正常に更新されました",
+    "updateError": "プロファイルの更新に失敗しました",
+    "deleteSuccess": "プロファイルが正常に削除されました",
+    "deleteError": "プロファイルの削除に失敗しました",
+    "loadIssue": "読み込みの問題",
+    "showingSampleData": "サンプルデータを表示しています"
   },
   "analysis": {
     "title": "分析",

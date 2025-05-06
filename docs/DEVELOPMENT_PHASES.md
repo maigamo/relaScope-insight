@@ -17,6 +17,149 @@
 - 前后端分离，通过 IPC 安全通信
 - 添加清晰的文件、函数和重要逻辑注释
 
+
+**IPC响应格式规范：**
+
+为确保整个应用中IPC通信的一致性和可靠性，**所有IPC处理器必须遵循统一的响应格式**。这不仅提高了代码的可维护性，也简化了前端对响应的处理逻辑。
+
+1. **统一响应接口**：
+   ```typescript
+   interface IPCResponse<T = any> {
+     success: boolean;   // 操作是否成功
+     data?: T;           // 成功时返回的数据
+     error?: string;     // 失败时的错误信息
+   }
+   ```
+
+2. **成功响应示例**：
+   ```typescript
+   // 返回数据列表
+   return { 
+     success: true, 
+     data: users 
+   } as IPCResponse<User[]>;
+   
+   // 返回单个对象
+   return { 
+     success: true, 
+     data: profile 
+   } as IPCResponse<Profile>;
+   
+   // 返回操作结果（无需返回数据）
+   return { 
+     success: true 
+   } as IPCResponse;
+   ```
+
+3. **错误响应示例**：
+   ```typescript
+   // 返回具体错误信息
+   return { 
+     success: false, 
+     error: `创建个人信息失败: ${error.message}` 
+   } as IPCResponse;
+   
+   // 返回通用错误
+   return { 
+     success: false, 
+     error: '操作失败，请重试' 
+   } as IPCResponse;
+   ```
+
+4. **IPC处理器实现规范**：
+   ```typescript
+   ipcMain.handle('channel:name', async (_, ...args) => {
+     try {
+       const result = await someOperation(...args);
+       return { 
+         success: true, 
+         data: result 
+       } as IPCResponse;
+     } catch (error: any) {
+       console.error(`操作失败: ${error.message}`);
+       return { 
+         success: false, 
+         error: `操作失败: ${error.message}` 
+       } as IPCResponse;
+     }
+   });
+   ```
+
+5. **前端调用与处理**：
+   ```typescript
+   const response = await ipcService.invoke('channel:name', params);
+   
+   if (response.success) {
+     // 成功处理
+     const data = response.data;
+     // ...
+   } else {
+     // 错误处理
+     console.error(response.error);
+     // 显示错误消息
+     toast({
+       title: '操作失败',
+       description: response.error || '未知错误',
+       status: 'error',
+       duration: 5000,
+     });
+   }
+   ```
+
+6. **禁止的返回格式**：
+   - ❌ 直接返回数据对象：`return user;`
+   - ❌ 直接返回布尔值：`return true;`
+   - ❌ 直接返回数组：`return users;`
+   - ❌ 使用不一致的响应结构：`return { ok: true, result: data };`
+
+确保所有新开发的IPC处理器严格遵循上述规范，并在代码审查过程中检查IPC响应格式的一致性。现有不符合规范的处理器应在重构或维护时进行更新。
+
+**IPC通信最佳实践：**
+- **响应格式处理**：所有IPC响应处理必须使用以下健壮的判断方法:
+  ```javascript
+  // 更健壮的成功条件判断（三种响应格式）
+  const isSuccess = 
+    response === true || 
+    (typeof response === 'object' && response !== null && 
+      (response.success === true || response['success'] === true ||
+       // 处理直接返回数据对象的情况（创建/更新）
+       (response.id && !response.hasOwnProperty('success'))));
+  
+  // 删除操作特殊处理
+  const isDeleteSuccess = 
+    response === true || 
+    (typeof response === 'object' && response !== null && 
+      (response.success === true || response['success'] === true ||
+       // 处理返回变更数据的情况
+       (response.hasOwnProperty && !response.hasOwnProperty('success') && 
+        (response === true || response.data === true || response.changes > 0))));
+  
+  if (isSuccess) {
+    // 成功处理...
+  } else {
+    // 错误处理...
+  }
+  ```
+- **错误处理**：使用可选链操作符安全访问可能不存在的属性
+  ```javascript
+  // 正确的错误信息提取
+  const errorMessage = response?.error || defaultErrorMessage;
+  ```
+- **乐观UI更新**：对于删除等操作，应先更新UI再调用API，优化用户体验
+  ```javascript
+  // 立即更新UI
+  setItems(prev => prev.filter(item => item.id !== id));
+  // 然后调用API
+  const result = await ipcService.invoke('delete', id);
+  ```
+- **数据类型验证**：总是验证返回的数据类型，不要假设返回值格式统一
+  ```javascript
+  // 安全地处理数组或对象包装的数组
+  const data = Array.isArray(response) ? response : (response?.data || []);
+  ```
+
+
+
 ## 视觉风格规范
 
 项目UI应严格按照[RelaScopeInsight UI风格说明](./RelaScopeInsight%20UI风格说明.md) 中定义的视觉规范进行设计和实现，关键点包括：
@@ -85,6 +228,14 @@
 - **列表项**: 进出场时有流畅的过渡动画
 - **暗模式切换**: 点击图标即时切换
 - **空白状态**: 提供快速创建选项引导
+
+**UI设计规范实现：**
+- 列表页面：使用卡片组件，白底配置适当圆角，符合整体风格
+- 表单控件：遵循字号规范（主标题20px中粗体，区域标题16px中等，正文14px常规）
+- 搜索框：添加搜索图标前缀 `<i class="fas fa-search"></i>`
+- 分页控件：使用官方组件，配色符合主色调
+- 删除确认对话框：使用标准模态框，带有明确的警告颜色和图标
+- 确保表单间距遵循8px基础网格系统
 
 ## 配置管理
 
@@ -338,13 +489,7 @@
 - 列表页面每页显示条目数应根据 `ui-config.json` 中的 listPageSize 设置（默认20条）
 - 删除操作需根据 `ui-config.json` 中的 confirmDeletion 设置决定是否需要二次确认
 
-**UI设计规范实现：**
-- 列表页面：使用卡片组件，白底配置适当圆角，符合整体风格
-- 表单控件：遵循字号规范（主标题20px中粗体，区域标题16px中等，正文14px常规）
-- 搜索框：添加搜索图标前缀 `<i class="fas fa-search"></i>`
-- 分页控件：使用官方组件，配色符合主色调
-- 删除确认对话框：使用标准模态框，带有明确的警告颜色和图标
-- 确保表单间距遵循8px基础网格系统
+
 
 ### 阶段五：语录与经历管理功能实现
 
@@ -644,6 +789,7 @@
   - 确保键盘导航功能完整
   - 提供足够的颜色对比度
   - 所有交互元素有明确的焦点状态
+
 
 ## 开发记录与更新
 

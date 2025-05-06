@@ -1,5 +1,6 @@
-import { BaseDAO } from '../BaseDAO';
+import { BaseDAO } from './BaseDAOImpl';
 import { HexagonModel } from '../models/HexagonModel';
+import { BaseDAOUtils } from './BaseDAOUtils';
 
 export class HexagonModelDAO extends BaseDAO<HexagonModel> {
   constructor() {
@@ -57,7 +58,7 @@ export class HexagonModelDAO extends BaseDAO<HexagonModel> {
     try {
       if (!this.db) await this.initializeDatabase();
       
-      const { sql, params } = this.generateUpdateSQL(hexagonModel);
+      const { sql, params } = BaseDAOUtils.generateUpdateSQL(this.tableName, hexagonModel);
       params.push(id); // 添加WHERE条件的ID参数
       
       const result = await this.db?.run(sql, ...params);

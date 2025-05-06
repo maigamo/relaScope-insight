@@ -1,5 +1,6 @@
-import { BaseDAO } from '../BaseDAO';
+import { BaseDAO } from './BaseDAOImpl';
 import { Experience } from '../models/Experience';
+import { BaseDAOUtils } from './BaseDAOUtils';
 
 export class ExperienceDAO extends BaseDAO<Experience> {
   constructor() {
@@ -44,7 +45,7 @@ export class ExperienceDAO extends BaseDAO<Experience> {
     try {
       if (!this.db) await this.initializeDatabase();
       
-      const { sql, params } = this.generateUpdateSQL(experience);
+      const { sql, params } = BaseDAOUtils.generateUpdateSQL(this.tableName, experience);
       params.push(id); // 添加WHERE条件的ID参数
       
       const result = await this.db?.run(sql, ...params);

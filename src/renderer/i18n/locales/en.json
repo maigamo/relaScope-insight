@@ -14,7 +14,11 @@
     "search": "Search...",
     "noResults": "No results found",
     "error": "An error occurred",
-    "success": "Operation successful"
+    "success": "Operation successful",
+    "actions": "Actions",
+    "view": "View",
+    "createDate": "Created Date",
+    "retry": "Retry"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -38,7 +42,23 @@
     "name": "Name",
     "category": "Category",
     "tags": "Tags",
-    "lastModified": "Last Modified"
+    "lastModified": "Last Modified",
+    "info": "Basic Info",
+    "interests": "Interests",
+    "male": "Male",
+    "female": "Female",
+    "yearsOld": "years old",
+    "deleteConfirmTitle": "Confirm Delete",
+    "deleteConfirmMessage": "Are you sure you want to delete '{{name}}'? This action cannot be undone.",
+    "loadError": "Failed to load profiles",
+    "createSuccess": "Profile created successfully",
+    "createError": "Failed to create profile",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile",
+    "deleteSuccess": "Profile deleted successfully",
+    "deleteError": "Failed to delete profile",
+    "loadIssue": "Loading Issue",
+    "showingSampleData": "Showing sample data"
   },
   "analysis": {
     "title": "Analysis",

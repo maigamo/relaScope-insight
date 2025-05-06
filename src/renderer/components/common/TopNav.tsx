@@ -40,7 +40,8 @@ interface TopNavProps {
 const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { t, i18n } = useTranslation();
-  const { language, setLanguage } = useContext(AppContext);
+  const { state, setLanguage } = useContext(AppContext);
+  const { language } = state;
 
   // 语言切换处理
   const handleLanguageChange = (lang: string) => {
@@ -90,19 +91,6 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
 
       {/* 右侧功能按钮 */}
       <HStack spacing={3}>
-        {/* 主题切换按钮 */}
-        <IconButton
-          aria-label={colorMode === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-          icon={<FontAwesomeIcon icon={colorMode === 'dark' ? faSun : faMoon} />}
-          onClick={toggleColorMode}
-          variant="ghost"
-          fontSize="lg"
-          _hover={{ bg: colorMode === 'dark' ? 'gray.700' : 'gray.100' }}
-          as={motion.button}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        />
-
         {/* 语言选择菜单 */}
         <Menu closeOnSelect>
           <MenuButton

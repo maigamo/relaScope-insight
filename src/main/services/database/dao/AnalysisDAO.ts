@@ -1,4 +1,4 @@
-import { BaseDAO } from '../BaseDAO';
+import { BaseDAO } from './BaseDAOImpl';
 import { Analysis } from '../models/Analysis';
 
 export class AnalysisDAO extends BaseDAO<Analysis> {

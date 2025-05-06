@@ -26,9 +26,9 @@ const createWindow = () => {
 
   // 加载应用的 index.html
   if (isDev) {
-    console.log('正在加载开发服务器URL: http://localhost:8082');
+    console.log('正在加载开发服务器URL: http://localhost:8085');
     // 开发环境下，加载开发服务器地址
-    mainWindow.loadURL('http://localhost:8082');
+    mainWindow.loadURL('http://localhost:8085');
   } else {
     console.log('正在加载生产环境文件');
     // 生产环境下，加载本地文件

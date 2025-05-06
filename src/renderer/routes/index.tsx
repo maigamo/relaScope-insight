@@ -1,10 +1,51 @@
 import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../components/common/MainLayout';
+import SuspenseFallback from '../components/common/SuspenseFallback';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { Alert, AlertIcon, AlertTitle, AlertDescription, Button, Box } from '@chakra-ui/react';
+
+// ErrorBoundary组件的Fallback
+const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => (
+  <Box p={5}>
+    <Alert
+      status="error"
+      variant="subtle"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      textAlign="center"
+      height="200px"
+      borderRadius="md"
+    >
+      <AlertIcon boxSize="40px" mr={0} />
+      <AlertTitle mt={4} mb={1} fontSize="lg">
+        页面加载出错
+      </AlertTitle>
+      <AlertDescription maxWidth="sm">
+        {error.message}
+      </AlertDescription>
+      <Button onClick={resetErrorBoundary} mt={4} colorScheme="red">
+        重试
+      </Button>
+    </Alert>
+  </Box>
+);
+
+// 页面加载器HOC
+const withErrorBoundary = (Component: React.ComponentType, fallback?: React.ReactNode) => {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <React.Suspense fallback={fallback || <SuspenseFallback />}>
+        <Component />
+      </React.Suspense>
+    </ErrorBoundary>
+  );
+};
 
 // 懒加载页面组件
 const Dashboard = React.lazy(() => import('../pages/Dashboard'));
-const ProfilesPage = React.lazy(() => import('../pages/profiles/ProfilesPage'));
+const ProfilesPage = React.lazy(() => import('../pages/profiles'));
 const QuotesPage = React.lazy(() => import('../pages/quotes/QuotesPage'));
 const ExperiencesPage = React.lazy(() => import('../pages/experiences/ExperiencesPage'));
 const AnalysisPage = React.lazy(() => import('../pages/analysis/AnalysisPage'));
@@ -23,59 +64,31 @@ const router = createBrowserRouter([
       },
       {
         path: '/dashboard',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <Dashboard />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(Dashboard, <SuspenseFallback message="加载仪表盘..." />),
       },
       {
         path: '/profiles',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfilesPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(ProfilesPage, <SuspenseFallback message="加载个人档案..." />),
       },
       {
         path: '/quotes',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <QuotesPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(QuotesPage, <SuspenseFallback message="加载语录..." />),
       },
       {
         path: '/experiences',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ExperiencesPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(ExperiencesPage, <SuspenseFallback message="加载经历..." />),
       },
       {
         path: '/analysis',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <AnalysisPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(AnalysisPage, <SuspenseFallback message="加载分析..." />),
       },
       {
         path: '/settings',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <SettingsPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(SettingsPage, <SuspenseFallback message="加载设置..." />),
       },
       {
         path: '*',
-        element: (
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <NotFoundPage />
-          </React.Suspense>
-        ),
+        element: withErrorBoundary(NotFoundPage, <SuspenseFallback message="页面未找到..." />),
       },
     ],
   },

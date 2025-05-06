@@ -1,9 +1,57 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { IPCResponse } from '../common/types/ipc';
-import { CONFIG_CHANNELS, APP_CHANNELS, DB_CHANNELS } from '../common/constants/ipc';
+import path from 'path';
+import fs from 'fs';
+
+console.log('预加载脚本开始执行');
+
+// 类型定义
+interface IPCResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+// 定义IPC常量
+const CONFIG_CHANNELS = {
+  GET_CONFIG: 'config:get',
+  SET_CONFIG: 'config:set',
+  GET_ALL_CONFIGS: 'config:getAll'
+};
+
+const APP_CHANNELS = {
+  MINIMIZE: 'app:minimize',
+  MAXIMIZE: 'app:maximize',
+  CLOSE: 'app:close',
+  CHECK_FOR_UPDATES: 'app:checkForUpdates'
+};
+
+const DB_CHANNELS = {
+  INITIALIZE: 'db:initialize',
+  EXECUTE_QUERY: 'db:executeQuery',
+  
+  // 配置文件相关频道
+  PROFILE: {
+    GET_ALL: 'db:profile:getAll',
+    GET_BY_ID: 'db:profile:getById',
+    CREATE: 'db:profile:create',
+    UPDATE: 'db:profile:update',
+    DELETE: 'db:profile:delete',
+    SEARCH: 'db:profile:search',
+    GET_RECENT: 'db:profile:getRecent'
+  },
+  
+  // 引用相关频道
+  QUOTE: {
+    GET_ALL: 'db:quote:getAll',
+    GET_BY_ID: 'db:quote:getById',
+    CREATE: 'db:quote:create',
+    UPDATE: 'db:quote:update',
+    DELETE: 'db:quote:delete',
+    SEARCH: 'db:quote:search'
+  }
+};
 
 // 数据库API通道名称
-// 注意：这些通道名需要和主进程中的DatabaseIpcHandler中定义的一致
 const DB_API_CHANNELS = {
   // 数据库操作
   DB_INITIALIZE: 'db:initialize',
@@ -50,191 +98,66 @@ const DB_API_CHANNELS = {
   HEXAGON_COMPARE: 'hexagon:compare'
 };
 
-// 暴露给渲染进程的API
+// 通用IPC调用函数
+async function invokeIPC<T>(channel: string, ...args: any[]): Promise<IPCResponse<T>> {
+  try {
+    console.log(`调用IPC: ${channel}`, args);
+    const response = await ipcRenderer.invoke(channel, ...args);
+    console.log(`IPC响应: ${channel}`, response);
+    return response;
+  } catch (error: any) {
+    console.error(`IPC调用错误 [${channel}]:`, error);
+    return {
+      success: false,
+      error: error.message || '未知错误'
+    };
+  }
+}
+
+// 为渲染进程提供的API
 const electronAPI = {
-  // 配置服务
-  configService: {
-    // 获取配置
-    getConfig: async <T>(args: { key: string; defaultValue?: T }): Promise<IPCResponse<T>> => {
-      return ipcRenderer.invoke(CONFIG_CHANNELS.GET_CONFIG, args);
-    },
-    
-    // 设置配置
-    setConfig: async <T>(args: { key: string; value: T }): Promise<IPCResponse<void>> => {
-      return ipcRenderer.invoke(CONFIG_CHANNELS.SET_CONFIG, args);
-    },
-    
-    // 获取所有配置
-    getAllConfigs: async (): Promise<IPCResponse<Record<string, any>>> => {
-      return ipcRenderer.invoke(CONFIG_CHANNELS.GET_ALL_CONFIGS);
+  send: (channel: string, data?: any) => {
+    console.log(`发送IPC消息: ${channel}`, data);
+    ipcRenderer.send(channel, data);
+  },
+
+  invoke: async <T = any>(channel: string, data?: any): Promise<IPCResponse<T>> => {
+    return invokeIPC<T>(channel, data);
+  },
+
+  receive: (channel: string, func: (...args: any[]) => void) => {
+    console.log(`注册IPC监听器: ${channel}`);
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+    return () => {
+      console.log(`移除IPC监听器: ${channel}`);
+      ipcRenderer.removeListener(channel, func);
+    };
+  },
+
+  // 添加移除指定监听器的方法
+  removeListener: (channel: string, listener?: Function) => {
+    console.log(`移除IPC监听器: ${channel}`);
+    if (listener) {
+      ipcRenderer.removeListener(channel, listener as any);
     }
   },
-  
-  // 应用控制
-  appControl: {
-    // 最小化窗口
-    minimize: (): void => {
-      ipcRenderer.send(APP_CHANNELS.MINIMIZE);
-    },
-    
-    // 最大化/还原窗口
-    maximize: (): void => {
-      ipcRenderer.send(APP_CHANNELS.MAXIMIZE);
-    },
-    
-    // 关闭窗口
-    close: (): void => {
-      ipcRenderer.send(APP_CHANNELS.CLOSE);
-    }
-  },
-  
-  // 数据库服务（旧版本保留，建议使用下面的dbApi）
-  dbService: {
-    // 初始化数据库
-    initialize: async (): Promise<IPCResponse<void>> => {
-      return ipcRenderer.invoke(DB_CHANNELS.INITIALIZE);
-    },
-    
-    // 执行SQL查询（已废弃）
-    executeQuery: async <T>(args: { sql: string; params?: any[] }): Promise<IPCResponse<T[]>> => {
-      return ipcRenderer.invoke(DB_CHANNELS.EXECUTE_QUERY, args);
-    }
-  },
-  
-  // 新版数据库API
-  dbApi: {
-    // 数据库管理API
-    db: {
-      initialize: async (config?: any): Promise<void> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.DB_INITIALIZE, config);
-      },
-      createBackup: async (): Promise<string> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.DB_CREATE_BACKUP);
-      },
-      restoreFromBackup: async (backupPath: string): Promise<void> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.DB_RESTORE_BACKUP, backupPath);
-      },
-      getBackupFiles: async (): Promise<Array<{ path: string; date: Date; size: number }>> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.DB_GET_BACKUP_FILES);
-      }
-    },
-    
-    // 个人档案API
-    profile: {
-      create: async (profile: any): Promise<any> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_CREATE, profile);
-      },
-      update: async (profile: any): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_UPDATE, profile);
-      },
-      getAll: async (): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_GET_ALL);
-      },
-      getById: async (id: number): Promise<any | null> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_GET_BY_ID, id);
-      },
-      delete: async (id: number): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_DELETE, id);
-      },
-      getRecent: async (limit: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.PROFILE_GET_RECENT, limit);
-      }
-    },
-    
-    // 引用API
-    quote: {
-      create: async (quote: any): Promise<any> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.QUOTE_CREATE, quote);
-      },
-      update: async (quote: any): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.QUOTE_UPDATE, quote);
-      },
-      getByProfileId: async (profileId: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.QUOTE_GET_BY_PROFILE, profileId);
-      },
-      delete: async (id: number): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.QUOTE_DELETE, id);
-      },
-      getRecent: async (limit: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.QUOTE_GET_RECENT, limit);
-      }
-    },
-    
-    // 经历API
-    experience: {
-      create: async (experience: any): Promise<any> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.EXPERIENCE_CREATE, experience);
-      },
-      update: async (experience: any): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.EXPERIENCE_UPDATE, experience);
-      },
-      getByProfileId: async (profileId: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.EXPERIENCE_GET_BY_PROFILE, profileId);
-      },
-      delete: async (id: number): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.EXPERIENCE_DELETE, id);
-      },
-      getRecent: async (limit: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.EXPERIENCE_GET_RECENT, limit);
-      }
-    },
-    
-    // 分析API
-    analysis: {
-      create: async (analysis: any): Promise<any> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.ANALYSIS_CREATE, analysis);
-      },
-      update: async (analysis: any): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.ANALYSIS_UPDATE, analysis);
-      },
-      getByProfileId: async (profileId: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.ANALYSIS_GET_BY_PROFILE, profileId);
-      },
-      getRecent: async (limit: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.ANALYSIS_GET_RECENT, limit);
-      },
-      getStats: async (): Promise<{ type: string; count: number }[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.ANALYSIS_GET_STATS);
-      }
-    },
-    
-    // 六边形模型API
-    hexagonModel: {
-      create: async (model: any): Promise<any> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_CREATE, model);
-      },
-      update: async (model: any): Promise<boolean> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_UPDATE, model);
-      },
-      getByProfileId: async (profileId: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_GET_BY_PROFILE, profileId);
-      },
-      getLatest: async (profileId: number): Promise<any | null> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_GET_LATEST, profileId);
-      },
-      getRecent: async (limit: number): Promise<any[]> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_GET_RECENT, limit);
-      },
-      getAverage: async (): Promise<{ [key: string]: number }> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_GET_AVERAGE);
-      },
-      compare: async (id1: number, id2: number): Promise<{ 
-        differences: { [key: string]: { value1: number; value2: number; difference: number } };
-        timeGap: number;
-      }> => {
-        return ipcRenderer.invoke(DB_API_CHANNELS.HEXAGON_COMPARE, id1, id2);
-      }
-    }
-  },
-  
-  // 版本信息
-  getAppVersion: (): string => {
-    return process.env.APP_VERSION || '0.1.0';
+
+  // 添加移除所有监听器的方法
+  removeAllListeners: (channel: string) => {
+    console.log(`移除所有IPC监听器: ${channel}`);
+    ipcRenderer.removeAllListeners(channel);
   }
 };
 
-// 安全地暴露API给渲染进程
-contextBridge.exposeInMainWorld('electron', electronAPI);
+// 导出IPC常量供前端使用
+const ipcConstants = {
+  CONFIG_CHANNELS,
+  APP_CHANNELS,
+  DB_CHANNELS
+};
 
-// 初始化加载时通知
-console.log('预加载脚本已加载'); 
+// 暴露给渲染进程的API
+contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+contextBridge.exposeInMainWorld('IPC_CONSTANTS', ipcConstants);
+
+console.log('预加载脚本已完成，所有API已暴露给渲染进程'); 

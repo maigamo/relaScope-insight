@@ -21,7 +21,7 @@ const variants = {
 // 主布局组件
 const MainLayout: React.FC = () => {
   const { colorMode } = useColorMode();
-  const { sidebarCollapsed } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -32,21 +32,17 @@ const MainLayout: React.FC = () => {
       position="relative"
       bg={colorMode === 'dark' ? 'gray.800' : 'gray.50'}
     >
-      {/* 侧边栏 */}
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
-        mobileOpen={isOpen} 
-        onMobileClose={onClose} 
-      />
+      {/* 侧边栏 - 根据设计规范固定宽度为60px */}
+      <Sidebar />
       
-      {/* 主内容区域 */}
+      {/* 主内容区域 - 固定左边距为60px */}
       <Box
         flex={1}
         h="100vh"
         display="flex"
         flexDirection="column"
         overflow="hidden"
-        ml={{ base: 0, md: sidebarCollapsed ? '64px' : '240px' }}
+        ml={{ base: 0, md: '60px' }}
         transition="margin-left 0.3s ease"
       >
         {/* 顶部导航 */}
@@ -62,7 +58,7 @@ const MainLayout: React.FC = () => {
           animate="enter"
           exit="exit"
           variants={variants}
-          transition={{ duration: 0.3, type: 'easeInOut' }}
+          transition={{ duration: 0.3, type: 'easeInOut' } as any}
         >
           <Outlet />
         </Box>

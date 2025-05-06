@@ -1,18 +1,13 @@
 import { Database } from 'sqlite';
-import { DatabaseManager } from './DatabaseManager';
+import { DatabaseManager } from '../DatabaseManager';
+import { ExtendedDAO } from './DAOInterfaces';
+import { BaseDAOUtils } from './BaseDAOUtils';
 
-// 基础数据访问对象接口
-export interface DAO<T> {
-  findById(id: number): Promise<T | null>;
-  findAll(): Promise<T[]>;
-  insert(entity: Omit<T, 'id'>): Promise<number>;
-  update(id: number, entity: Partial<T>): Promise<boolean>;
-  delete(id: number): Promise<boolean>;
-  count(): Promise<number>;
-}
-
-// 基础数据访问对象抽象类
-export abstract class BaseDAO<T extends { id?: number }> implements DAO<T> {
+/**
+ * 基础数据访问对象抽象类
+ * 实现数据库通用操作
+ */
+export abstract class BaseDAO<T extends { id?: number }> implements ExtendedDAO<T> {
   protected db: Database | null = null;
   protected tableName: string;
 
@@ -134,7 +129,7 @@ export abstract class BaseDAO<T extends { id?: number }> implements DAO<T> {
     try {
       if (!this.db) await this.initializeDatabase();
       
-      const { sql, params } = this.generateUpdateSQL(entity);
+      const { sql, params } = BaseDAOUtils.generateUpdateSQL(this.tableName, entity);
       params.push(id); // 添加WHERE条件的ID
       
       const result = await this.db?.run(sql, ...params);
@@ -156,7 +151,7 @@ export abstract class BaseDAO<T extends { id?: number }> implements DAO<T> {
         return false;
       }
       
-      const setClauses = keys.map(key => `${this.camelToSnake(key)} = ?`).join(', ');
+      const setClauses = keys.map(key => `${BaseDAOUtils.camelToSnake(key)} = ?`).join(', ');
       const params = [...keys.map(key => (entity as any)[key]), ...whereParams];
       
       const sql = `UPDATE ${this.tableName} SET ${setClauses} WHERE ${whereClause}`;
@@ -248,7 +243,7 @@ export abstract class BaseDAO<T extends { id?: number }> implements DAO<T> {
       
       return result?.count || 0;
     } catch (error) {
-      console.error(`条件统计${this.tableName}记录数量时出错:`, error);
+      console.error(`条件统计${this.tableName}记录时出错:`, error);
       throw error;
     }
   }
@@ -256,67 +251,22 @@ export abstract class BaseDAO<T extends { id?: number }> implements DAO<T> {
   // 检查实体是否存在
   public async exists(id: number): Promise<boolean> {
     try {
-      if (!this.db) await this.initializeDatabase();
-      
-      const query = `SELECT 1 FROM ${this.tableName} WHERE id = ? LIMIT 1`;
-      const result = await this.db?.get(query, id);
-      
-      return result ? true : false;
+      const count = await this.countWhere('id = ?', [id]);
+      return count > 0;
     } catch (error) {
-      console.error(`检查ID为${id}的${this.tableName}记录是否存在时出错:`, error);
-      throw error;
-    }
-  }
-  
-  // 检查条件是否存在
-  public async existsWhere(whereClause: string, whereParams: any[]): Promise<boolean> {
-    try {
-      if (!this.db) await this.initializeDatabase();
-      
-      const query = `SELECT 1 FROM ${this.tableName} WHERE ${whereClause} LIMIT 1`;
-      const result = await this.db?.get(query, ...whereParams);
-      
-      return result ? true : false;
-    } catch (error) {
-      console.error(`检查${this.tableName}记录是否存在时出错:`, error);
+      console.error(`检查${this.tableName}记录存在性时出错:`, error);
       throw error;
     }
   }
 
-  // 生成更新SQL语句
-  protected generateUpdateSQL(entity: Partial<T>): { sql: string, params: any[] } {
-    const keys = Object.keys(entity).filter(key => key !== 'id');
-    
-    if (keys.length === 0) {
-      throw new Error('没有要更新的字段');
+  // 条件检查实体是否存在
+  public async existsWhere(whereClause: string, whereParams: any[]): Promise<boolean> {
+    try {
+      const count = await this.countWhere(whereClause, whereParams);
+      return count > 0;
+    } catch (error) {
+      console.error(`条件检查${this.tableName}记录存在性时出错:`, error);
+      throw error;
     }
-    
-    const setClauses = keys.map(key => `${this.camelToSnake(key)} = ?`).join(', ');
-    const params = keys.map(key => (entity as any)[key]);
-    
-    const sql = `UPDATE ${this.tableName} SET ${setClauses} WHERE id = ?`;
-    
-    return { sql, params };
-  }
-  
-  // 驼峰命名转下划线命名
-  protected camelToSnake(str: string): string {
-    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-  }
-  
-  // 下划线命名转驼峰命名
-  protected snakeToCamel(str: string): string {
-    return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-  }
-  
-  // 将查询结果转换为驼峰命名对象
-  protected convertToCamelCase<T>(obj: any): T {
-    const result: any = {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        result[this.snakeToCamel(key)] = obj[key];
-      }
-    }
-    return result as T;
   }
 } 

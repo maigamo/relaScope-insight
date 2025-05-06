@@ -29,7 +29,9 @@ export const DB_CHANNELS = {
     GET_BY_ID: 'db:profile:getById',
     CREATE: 'db:profile:create',
     UPDATE: 'db:profile:update',
-    DELETE: 'db:profile:delete'
+    DELETE: 'db:profile:delete',
+    SEARCH: 'db:profile:search',
+    GET_RECENT: 'db:profile:getRecent'
   },
   
   // 引用相关频道

@@ -6,16 +6,24 @@ import { app } from 'electron';
  * 数据库配置接口
  */
 export interface DatabaseConfig {
-  // 数据库文件路径
+  /**
+   * 数据库文件路径
+   */
   dbPath: string;
   
-  // 备份目录路径
+  /**
+   * 备份目录
+   */
   backupDir: string;
   
-  // 最大备份文件数量
+  /**
+   * 最大备份文件数量
+   */
   maxBackupFiles: number;
   
-  // 是否启用日志
+  /**
+   * 是否启用日志
+   */
   logEnabled: boolean;
 }
 

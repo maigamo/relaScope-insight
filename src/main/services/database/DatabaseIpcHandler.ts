@@ -59,10 +59,95 @@ export class DatabaseIpcHandler {
         const profiles = await this.dbService.getProfileDAO().findAll();
         return { success: true, data: profiles } as IPCResponse;
       } catch (error: any) {
-        console.error(`获取配置文件列表失败: ${error.message}`);
+        console.error(`获取个人信息列表失败: ${error.message}`);
         return { 
           success: false, 
-          error: `获取配置文件列表失败: ${error.message}` 
+          error: `获取个人信息列表失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 根据ID获取个人信息
+    ipcMain.handle(DB_CHANNELS.PROFILE.GET_BY_ID, async (_, id: number) => {
+      try {
+        const profile = await this.dbService.getProfileDAO().findById(id);
+        return { success: true, data: profile } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取ID为${id}的个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `获取个人信息详情失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 创建个人信息
+    ipcMain.handle(DB_CHANNELS.PROFILE.CREATE, async (_, profile: any) => {
+      try {
+        const newProfile = await this.dbService.getProfileDAO().create(profile);
+        return { success: true, data: newProfile } as IPCResponse;
+      } catch (error: any) {
+        console.error(`创建个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `创建个人信息失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 更新个人信息
+    ipcMain.handle(DB_CHANNELS.PROFILE.UPDATE, async (_, params: { id: number, profile: any }) => {
+      try {
+        const { id, profile } = params;
+        const success = await this.dbService.getProfileDAO().update(id, profile);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`更新个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `更新个人信息失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 删除个人信息
+    ipcMain.handle(DB_CHANNELS.PROFILE.DELETE, async (_, id: number) => {
+      try {
+        const success = await this.dbService.getProfileDAO().delete(id);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`删除个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `删除个人信息失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 搜索个人信息
+    ipcMain.handle('db:profile:search', async (_, keyword: string) => {
+      try {
+        const profiles = await this.dbService.getProfileDAO().search(keyword);
+        return { success: true, data: profiles } as IPCResponse;
+      } catch (error: any) {
+        console.error(`搜索个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `搜索个人信息失败: ${error.message}` 
+        } as IPCResponse;
+      }
+    });
+
+    // 获取最近创建的个人信息
+    ipcMain.handle('db:profile:getRecent', async (_, limit: number = 5) => {
+      try {
+        const profiles = await this.dbService.getProfileDAO().getRecent(limit);
+        return { success: true, data: profiles } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取最近个人信息失败: ${error.message}`);
+        return { 
+          success: false, 
+          error: `获取最近个人信息失败: ${error.message}` 
         } as IPCResponse;
       }
     });
