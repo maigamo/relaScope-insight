@@ -17,6 +17,57 @@
 - 前后端分离，通过 IPC 安全通信
 - 添加清晰的文件、函数和重要逻辑注释
 
+**常量统一管理方案：**
+
+为确保项目中所有常量的一致性、可维护性和避免重复定义导致的错误，必须严格遵循以下常量管理方案：
+
+1. **中心化定义**：
+   - 所有IPC通道名称和常量必须在 `src/common/constants/` 目录下集中定义
+   - 使用模块化方式组织常量，如 `ipc.ts`、`config.ts`、`events.ts` 等
+
+2. **统一命名规范**：
+   - 常量名使用全大写下划线分隔格式 (UPPER_SNAKE_CASE)
+   - 常量组使用 PascalCase，如 `DB_CHANNELS.PROFILE.GET_ALL`
+   - 通道名格式应遵循 `模块:操作` 或 `模块:子模块:操作` 格式
+
+3. **预加载脚本同步**：
+   - 预加载脚本 (`src/preload/index.ts`) 必须从公共常量文件导入常量
+   - 严禁在预加载脚本中硬编码或重复定义已在公共常量文件中定义的常量
+   - 使用 `import { CONFIG_CHANNELS, APP_CHANNELS, DB_CHANNELS } from '../common/constants/ipc';`
+
+4. **构建流程要求**：
+   - 当常量文件变更时，必须重新构建主进程代码和预加载脚本
+   - 主进程和渲染进程使用的常量必须保持同步
+
+5. **代码防御实践**：
+   - 在使用IPC通道前，应添加基本的空值检查：
+   ```typescript
+   if (!DB_CHANNELS.MODULE.ACTION) {
+     setError('通道名未定义，请联系开发人员');
+     return;
+   }
+   ```
+   - 参数类型安全检查：
+   ```typescript
+   if (typeof id !== 'number' || id <= 0) {
+     // 处理无效参数
+     return;
+   }
+   ```
+
+6. **渲染进程访问示例**：
+   ```typescript
+   const { DB_CHANNELS } = window.IPC_CONSTANTS;
+   const response = await ipcService.invoke(DB_CHANNELS.PROFILE.GET_ALL);
+   ```
+
+7. **主进程注册示例**：
+   ```typescript
+   import { DB_CHANNELS } from '../../common/constants/ipc';
+   ipcMain.handle(DB_CHANNELS.PROFILE.GET_ALL, async () => { ... });
+   ```
+
+严格遵循上述规范可以避免常见的通道名不同步导致的问题，提高代码可维护性和可靠性。
 
 **IPC响应格式规范：**
 
@@ -524,6 +575,18 @@
 - 确保富文本内容存储遵循数据清洗原则，存储前进行安全过滤
 - 利用 React 18 的 Suspense 特性实现数据加载状态管理
 - Markdown 渲染功能应根据 `analysis-config.json` 中的 markdownRenderEnabled 设置控制
+
+### 阶段五补充：档案驱动的生活语录管理方案  
+:bookmark_tabs: :busts_in_silhouette: :memo:
+
+
+- 语录管理模块必须严格依托个人档案系统驱动。
+- 左侧用户列表仅展示"档案管理"中真实创建的档案用户，禁止mock用户。
+- 选中用户后，右侧仅展示和管理该档案下的生活语录（profileId强关联）。
+- 所有语录操作（增删改）都必须与真实档案关联，并通过IPC/API与数据库同步，禁止无主语录。
+- 删除档案时，其所有语录也一并删除（数据库外键约束）。
+- 用户列表和语录列表必须实时反映数据库真实状态，mock数据全部移除。
+
 
 ### 阶段六：可视化组件与六边形模型实现
 

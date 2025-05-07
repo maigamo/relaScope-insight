@@ -157,17 +157,81 @@ export class DatabaseIpcHandler {
    * 注册引用相关处理函数
    */
   private registerQuoteHandlers(): void {
-    // 示例：获取引用列表
+    // 获取全部引用
     ipcMain.handle(DB_CHANNELS.QUOTE.GET_ALL, async () => {
       try {
         const quotes = await this.dbService.getQuoteDAO().findAll();
         return { success: true, data: quotes } as IPCResponse;
       } catch (error: any) {
         console.error(`获取引用列表失败: ${error.message}`);
-        return { 
-          success: false, 
-          error: `获取引用列表失败: ${error.message}` 
-        } as IPCResponse;
+        return { success: false, error: `获取引用列表失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 根据ID获取引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.GET_BY_ID, async (_, id: number) => {
+      try {
+        const quote = await this.dbService.getQuoteDAO().findById(id);
+        return { success: true, data: quote } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取ID为${id}的引用失败: ${error.message}`);
+        return { success: false, error: `获取引用详情失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 创建引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.CREATE, async (_, quote: any) => {
+      try {
+        const newQuote = await this.dbService.getQuoteDAO().create(quote);
+        return { success: true, data: newQuote } as IPCResponse;
+      } catch (error: any) {
+        console.error(`创建引用失败: ${error.message}`);
+        return { success: false, error: `创建引用失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 更新引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.UPDATE, async (_, params: { id: number, quote: any }) => {
+      try {
+        const { id, quote } = params;
+        const success = await this.dbService.getQuoteDAO().update(id, quote);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`更新引用失败: ${error.message}`);
+        return { success: false, error: `更新引用失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 删除引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.DELETE, async (_, id: number) => {
+      try {
+        const success = await this.dbService.getQuoteDAO().delete(id);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`删除引用失败: ${error.message}`);
+        return { success: false, error: `删除引用失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 按profileId获取引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.GET_BY_PROFILE, async (_, profileId: number) => {
+      try {
+        const quotes = await this.dbService.getQuoteDAO().findByProfileId(profileId);
+        return { success: true, data: quotes } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取个人档案ID为${profileId}的引用失败: ${error.message}`);
+        return { success: false, error: `获取个人档案引用失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 搜索引用
+    ipcMain.handle(DB_CHANNELS.QUOTE.SEARCH, async (_, keyword: string) => {
+      try {
+        const quotes = await this.dbService.getQuoteDAO().search(keyword);
+        return { success: true, data: quotes } as IPCResponse;
+      } catch (error: any) {
+        console.error(`搜索引用失败: ${error.message}`);
+        return { success: false, error: `搜索引用失败: ${error.message}` } as IPCResponse;
       }
     });
   }
