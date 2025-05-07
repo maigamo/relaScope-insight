@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { CONFIG_CHANNELS, APP_CHANNELS, DB_CHANNELS } from '../common/constants/ipc';
 
 console.log('预加载脚本开始执行');
 
@@ -11,6 +10,47 @@ interface IPCResponse<T = any> {
   data?: T;
   error?: string;
 }
+
+// 定义IPC常量
+const CONFIG_CHANNELS = {
+  GET_CONFIG: 'config:get',
+  SET_CONFIG: 'config:set',
+  GET_ALL_CONFIGS: 'config:getAll'
+};
+
+const APP_CHANNELS = {
+  MINIMIZE: 'app:minimize',
+  MAXIMIZE: 'app:maximize',
+  CLOSE: 'app:close',
+  CHECK_FOR_UPDATES: 'app:checkForUpdates'
+};
+
+const DB_CHANNELS = {
+  INITIALIZE: 'db:initialize',
+  EXECUTE_QUERY: 'db:executeQuery',
+  
+  // 配置文件相关频道
+  PROFILE: {
+    GET_ALL: 'db:profile:getAll',
+    GET_BY_ID: 'db:profile:getById',
+    CREATE: 'db:profile:create',
+    UPDATE: 'db:profile:update',
+    DELETE: 'db:profile:delete',
+    SEARCH: 'db:profile:search',
+    GET_RECENT: 'db:profile:getRecent'
+  },
+  
+  // 引用相关频道
+  QUOTE: {
+    GET_ALL: 'db:quote:getAll',
+    GET_BY_ID: 'db:quote:getById',
+    CREATE: 'db:quote:create',
+    UPDATE: 'db:quote:update',
+    DELETE: 'db:quote:delete',
+    SEARCH: 'db:quote:search',
+    GET_BY_PROFILE: 'db:quote:getByProfile'
+  }
+};
 
 // 数据库API通道名称
 const DB_API_CHANNELS = {

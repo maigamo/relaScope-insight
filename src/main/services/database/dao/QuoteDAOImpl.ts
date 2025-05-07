@@ -31,8 +31,8 @@ export class QuoteDAOImpl extends BaseDAO<Quote> implements QuoteDAO {
       const now = new Date().toISOString();
       const quoteData: Omit<Quote, 'id'> = {
         ...entity,
-        createdAt: entity.createdAt || now,
-        updatedAt: entity.updatedAt || now
+        created_at: entity.created_at || now,
+        updated_at: entity.updated_at || now
       };
 
       const id = await this.insert(quoteData);
@@ -113,7 +113,7 @@ export class QuoteDAOImpl extends BaseDAO<Quote> implements QuoteDAO {
    * @param criteria 搜索条件
    */
   public async searchByCriteria(criteria: {
-    profileId?: number;
+    profile_id?: number;
     content?: string;
     source?: string;
     tag?: string;
@@ -122,9 +122,9 @@ export class QuoteDAOImpl extends BaseDAO<Quote> implements QuoteDAO {
     const conditions: string[] = [];
     const params: any[] = [];
 
-    if (criteria.profileId !== undefined) {
+    if (criteria.profile_id !== undefined) {
       conditions.push('profile_id = ?');
-      params.push(criteria.profileId);
+      params.push(criteria.profile_id);
     }
 
     if (criteria.content) {

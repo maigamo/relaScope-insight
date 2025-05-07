@@ -53,7 +53,7 @@ export interface QuoteDAO extends ExtendedDAO<Quote> {
    * @param criteria 搜索条件
    */
   searchByCriteria(criteria: {
-    profileId?: number;
+    profile_id?: number;
     content?: string;
     source?: string;
     tag?: string;

@@ -1,82 +1,134 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton,
-  Button, FormControl, FormLabel, Input, Textarea, Select, useToast
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  VStack,
+  useToast,
 } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import { ipcService } from '../../../services/ipc.service';
 
 interface QuoteFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    content: string;
-    source?: string;
-    tags?: string;
-    importance?: number;
-    date?: string;
-  }) => void;
   profileId: number | null;
+  onSuccess?: () => void;
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ isOpen, onClose, onSubmit, profileId }) => {
-  const [content, setContent] = useState('');
-  const [source, setSource] = useState('');
-  const [tags, setTags] = useState('');
-  const [importance, setImportance] = useState(3);
-  const [date, setDate] = useState('');
+interface QuoteFormData {
+  content: string;
+  source?: string;
+  tags?: string;
+}
+
+const QuoteForm: React.FC<QuoteFormProps> = ({ isOpen, onClose, profileId, onSuccess }) => {
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm<QuoteFormData>();
   const toast = useToast();
 
-  const handleSubmit = () => {
-    if (!content.trim()) {
-      toast({ title: '内容不能为空', status: 'warning' });
-      return;
-    }
+  const onSubmit = async (data: QuoteFormData) => {
     if (!profileId) {
-      toast({ title: '请先选择用户', status: 'warning' });
+      toast({
+        title: '请先选择一个档案',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
-    onSubmit({ content, source, tags, importance, date });
-    setContent(''); setSource(''); setTags(''); setImportance(3); setDate('');
+
+    try {
+      const { DB_CHANNELS } = window.IPC_CONSTANTS;
+      // 添加profileId到数据中
+      const quoteData = {
+        ...data,
+        profile_id: profileId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      await ipcService.invoke(DB_CHANNELS.QUOTE.CREATE, quoteData);
+      
+      reset();
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error: any) {
+      toast({
+        title: '保存失败',
+        description: error.message || '出现错误，请重试',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleClose = () => {
+    reset();
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>创建语录</ModalHeader>
+        <ModalHeader>添加新语录</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl mb={3} isRequired>
-            <FormLabel>内容</FormLabel>
-            <Textarea value={content} onChange={e => setContent(e.target.value)} placeholder="请输入语录内容" />
-          </FormControl>
-          <FormControl mb={3}>
-            <FormLabel>来源</FormLabel>
-            <Input value={source} onChange={e => setSource(e.target.value)} placeholder="如：作者/出处" />
-          </FormControl>
-          <FormControl mb={3}>
-            <FormLabel>标签</FormLabel>
-            <Input value={tags} onChange={e => setTags(e.target.value)} placeholder="多个标签用逗号分隔" />
-          </FormControl>
-          <FormControl mb={3}>
-            <FormLabel>重要性</FormLabel>
-            <Select value={importance} onChange={e => setImportance(Number(e.target.value))}>
-              <option value={1}>1 - 一般</option>
-              <option value={2}>2 - 普通</option>
-              <option value={3}>3 - 推荐</option>
-              <option value={4}>4 - 重要</option>
-              <option value={5}>5 - 极其重要</option>
-            </Select>
-          </FormControl>
-          <FormControl mb={3}>
-            <FormLabel>日期</FormLabel>
-            <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={onClose} mr={3}>取消</Button>
-          <Button colorScheme="blue" onClick={handleSubmit}>保存</Button>
-        </ModalFooter>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalBody>
+            <VStack spacing={4}>
+              <FormControl isRequired isInvalid={!!errors.content}>
+                <FormLabel>内容</FormLabel>
+                <Textarea
+                  {...register('content', { 
+                    required: '请输入语录内容',
+                    minLength: { value: 2, message: '内容至少需要2个字符' }
+                  })}
+                  placeholder="请输入语录内容"
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>来源</FormLabel>
+                <Input
+                  {...register('source')}
+                  placeholder="例如：书籍、电影、对话等"
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>标签</FormLabel>
+                <Input
+                  {...register('tags')}
+                  placeholder="例如：重要、励志、生活等"
+                />
+              </FormControl>
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={handleClose}>
+              取消
+            </Button>
+            <Button 
+              type="submit" 
+              colorScheme="blue" 
+              isLoading={isSubmitting}
+            >
+              保存
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
