@@ -168,6 +168,7 @@
     "showDetails": "Show details",
     "deleteConfirmTitle": "Delete Profile",
     "deleteConfirmBody": "This action will permanently delete this profile and related data. Are you sure?",
+    "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
     "noProfiles": "No profiles yet",
     "loadIssue": "Loading issue",
     "showingSampleData": "Showing sample data. You can retry to load real data",

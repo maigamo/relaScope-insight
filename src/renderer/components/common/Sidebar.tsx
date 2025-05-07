@@ -152,8 +152,8 @@ const Sidebar: React.FC = () => {
     <Box
       as="nav"
       w="60px"
-      bg={bg}
-      borderRightWidth="1px"
+      bg={colorMode === 'dark' ? 'gray.800' : '#F0F0F0'}
+      borderRightWidth="0"
       borderColor={borderColor}
       h="100%"
       display="flex"

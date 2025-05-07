@@ -66,10 +66,10 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
       justify="space-between"
       py={2}
       px={4}
-      borderBottomWidth="1px"
+      borderBottomWidth="0"
       borderColor={colorMode === 'dark' ? 'gray.700' : 'gray.200'}
-      bg={colorMode === 'dark' ? 'gray.800' : 'white'}
-      boxShadow="sm"
+      bg={colorMode === 'dark' ? 'gray.800' : '#F0F0F0'}
+      boxShadow="none"
       h="60px"
     >
       {/* 移动端菜单按钮 */}
@@ -96,11 +96,11 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
           <MenuButton
             as={Button}
             variant="ghost"
-            rightIcon={<FontAwesomeIcon icon={faLanguage} />}
             _hover={{ bg: colorMode === 'dark' ? 'gray.700' : 'gray.100' }}
             size="sm"
+            px={2}
           >
-            {getCurrentLanguageName()}
+            <FontAwesomeIcon icon={faLanguage} />
           </MenuButton>
           <MenuList>
             <MenuItem onClick={() => handleLanguageChange('zh')}>

@@ -168,6 +168,7 @@
     "showDetails": "詳細を表示",
     "deleteConfirmTitle": "プロフィール削除",
     "deleteConfirmBody": "この操作によりプロフィールと関連データが完全に削除されます。本当によろしいですか？",
+    "deleteConfirmMessage": "「{{name}}」を削除してもよろしいですか？この操作は元に戻せません。",
     "noProfiles": "プロフィールはまだありません",
     "loadIssue": "読み込みに問題があります",
     "showingSampleData": "サンプルデータが表示されています。実際のデータを読み込むには再試行してください",

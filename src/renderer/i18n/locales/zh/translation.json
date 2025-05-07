@@ -164,6 +164,7 @@
     "showDetails": "查看详情",
     "deleteConfirmTitle": "删除档案",
     "deleteConfirmBody": "此操作将永久删除该档案及其相关数据，确定要继续吗？",
+    "deleteConfirmMessage": "您确定要删除「{{name}}」吗？此操作不可撤销。",
     "noProfiles": "暂无个人档案",
     "loadIssue": "加载遇到问题",
     "showingSampleData": "显示的是示例数据，您可以重试加载真实数据",

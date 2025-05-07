@@ -35,14 +35,14 @@ const MainLayout: React.FC = () => {
       {/* 侧边栏 - 根据设计规范固定宽度为60px */}
       <Sidebar />
       
-      {/* 主内容区域 - 固定左边距为60px */}
+      {/* 主内容区域 - 左边距设置为0 */}
       <Box
         flex={1}
         h="100vh"
         display="flex"
         flexDirection="column"
         overflow="hidden"
-        ml={{ base: 0, md: '60px' }}
+        ml={0}
         transition="margin-left 0.3s ease"
       >
         {/* 顶部导航 */}
