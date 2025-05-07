@@ -92,4 +92,25 @@ RelaScopeInsight采用现代、简洁的扁平化设计风格，强调清晰的�
 - 暗模式切换：点击图标即时切换
 - 空白状态：提供快速创建选项，引导用户操作
 
+## 9. 最新UI优化说明  
+:art: :sparkles: :rocket:
+
+### ENGLISH
+- The **top navigation bar** and **sidebar** now use a unified background color: `#F0F0F0` in light mode, and `gray.800` in dark mode. :art:
+- All **borders and shadows** between the sidebar and top navigation bar have been removed for a seamless, flat look. :scissors:
+- The **language switch button** only displays the 🌐 icon, without any text, for a cleaner appearance. :globe_with_meridians:
+- All dividing lines between navigation and content are removed, making the interface more minimalistic. :wastebasket:
+
+### 中文
+- 顶部导航栏与侧边栏在亮色模式下统一为 `#F0F0F0` 背景，暗色模式下为 `gray.800`，风格一致。:art:
+- 侧边栏与顶部导航栏之间的所有边框和阴影已去除，界面更平滑。:scissors:
+- 语言切换按钮仅显示🌐图标，不再显示文字，界面更简洁。:globe_with_meridians:
+- 所有分割线已去除，整体风格更极简。:wastebasket:
+
+### 日本語
+- トップナビゲーションバーとサイドバーはライトモードで `#F0F0F0`、ダークモードで `gray.800` の背景色で統一されています。:art:
+- サイドバーとトップバーの間のすべての境界線と影が削除され、フラットな外観になりました。:scissors:
+- 言語切替ボタンは🌐アイコンのみを表示し、テキストは表示しません。:globe_with_meridians:
+- すべての区切り線が削除され、よりミニマルなUIになっています。:wastebasket:
+
 此设计风格遵循现代桌面应用的设计趋势，为用户提供清晰、直观的操作体验，同时保持界面的简洁美观。 
