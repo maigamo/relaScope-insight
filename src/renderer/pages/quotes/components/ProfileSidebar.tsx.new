@@ -1,0 +1,256 @@
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { 
+  VStack, 
+  Box, 
+  Text, 
+  Avatar, 
+  Spinner, 
+  useColorModeValue, 
+  InputGroup, 
+  Input, 
+  InputLeftElement,
+  InputRightElement,
+  CloseButton,
+  Center,
+  Button,
+  Flex
+} from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+import { ipcService } from '../../../services/ipc.service';
+import { debounce } from 'lodash';
+
+interface Profile {
+  id: number;
+  name: string;
+  avatar?: string;
+}
+
+interface ProfileSidebarProps {
+  selectedProfileId: number | null;
+  onSelect: (profileId: number) => void;
+}
+
+const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSelect }) => {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [total, setTotal] = useState(0);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  
+  // 使用useColorModeValue为暗模式和亮模式设置不同的颜�?  const selectedBg = useColorModeValue('blue.50', 'blue.900');
+  const selectedBorder = useColorModeValue('4px solid #3182ce', '4px solid #90cdf4');
+  const hoverBg = useColorModeValue('gray.50', 'gray.700');
+  const selectedTextColor = useColorModeValue('black', 'white');
+  const inputBg = useColorModeValue('white', 'gray.800');
+  const iconColor = useColorModeValue('gray.500', 'gray.400');
+
+  // 获取档案数据的函�?  const fetchProfiles = async (pageNum: number, search: string, isLoadMore: boolean = false) => {
+    try {
+      const loadingState = isLoadMore ? setLoadingMore : setLoading;
+      loadingState(true);
+      setError(null);
+      
+      const { DB_CHANNELS } = window.IPC_CONSTANTS;
+      const response = await ipcService.invoke(DB_CHANNELS.PROFILE.GET_ALL, {
+        page: pageNum,
+        limit: 20,
+        search: search.trim() || undefined,
+        sort: 'name' // 默认按名称排�?      });
+      
+      if (response.success) {
+        const { data, total } = response.data;
+        
+        // 处理加载更多的情�?        if (isLoadMore && pageNum > 1) {
+          setProfiles(prev => [...prev, ...data]);
+        } else {
+          setProfiles(data);
+        }
+        
+        setTotal(total);
+        setHasMore(data.length === 20); // 如果返回�?0条，假设还有更多
+      } else {
+        setError(response.error || '加载档案失败');
+      }
+    } catch (err: any) {
+      setError(err?.message || '加载档案失败');
+    } finally {
+      if (isLoadMore) { setLoadingMore(false); } else { setLoading(false); }
+    }
+  };
+
+  // 使用useEffect初始加载
+  useEffect(() => {
+    fetchProfiles(1, '');
+  }, []);
+
+  // 搜索函数(防抖处理)
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setPage(1); // 重置页码
+      fetchProfiles(1, value);
+    }, 300),
+    []
+  );
+
+  // 搜索输入变化处理
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
+
+  // 清除搜索
+  const clearSearch = () => {
+    setSearchQuery('');
+    setPage(1);
+    fetchProfiles(1, '');
+  };
+
+  // 加载更多
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchProfiles(nextPage, searchQuery, true);
+  };
+
+  // 渲染加载状�?  if (loading && !loadingMore) {
+    return (
+      <Center h="100%">
+        <Spinner size="md" my={8} />
+      </Center>
+    );
+  }
+
+  // 渲染错误状�?  if (error && !loadingMore) {
+    return (
+      <Box color="red.500" my={8} textAlign="center">
+        {error}
+        <Button mt={2} size="sm" onClick={() => fetchProfiles(1, searchQuery)}>
+          重试
+        </Button>
+      </Box>
+    );
+  }
+
+  // 渲染搜索结果为空的状�?  if (profiles.length === 0) {
+    return (
+      <VStack align="stretch" spacing={3} w="100%">
+        {/* 搜索�?*/}
+        <InputGroup size="sm" mt={2} mb={2}>
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color={iconColor} />
+          </InputLeftElement>
+          <Input
+            placeholder="搜索档案..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            bg={inputBg}
+            borderRadius="md"
+          />
+          {searchQuery && (
+            <InputRightElement>
+              <CloseButton size="sm" onClick={clearSearch} />
+            </InputRightElement>
+          )}
+        </InputGroup>
+        
+        <Center p={6} borderRadius="md" bg={inputBg} flexDirection="column">
+          <Text mb={3} color="gray.500">
+            {searchQuery ? `未找到匹�?${searchQuery}"的档案` : '无档案数�?}
+          </Text>
+          {searchQuery && (
+            <Button size="sm" onClick={clearSearch}>
+              清除搜索
+            </Button>
+          )}
+        </Center>
+      </VStack>
+    );
+  }
+
+  return (
+    <Box ref={sidebarRef} h="100%" overflowY="auto">
+      <VStack align="stretch" spacing={0} w="100%">
+        {/* 搜索�?*/}
+        <Box position="sticky" top={0} zIndex={10} bg={useColorModeValue('white', 'gray.800')} pt={2} pb={2}>
+          <InputGroup size="sm">
+            <InputLeftElement pointerEvents="none">
+              <SearchIcon color={iconColor} />
+            </InputLeftElement>
+            <Input
+              placeholder="搜索档案..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              bg={inputBg}
+              borderRadius="md"
+            />
+            {searchQuery && (
+              <InputRightElement>
+                <CloseButton size="sm" onClick={clearSearch} />
+              </InputRightElement>
+            )}
+          </InputGroup>
+        </Box>
+        
+        {/* 用户列表 */}
+        {profiles.map(profile => {
+          const isNumber = typeof profile.id === 'number';
+          return (
+            <Box
+              key={profile.id}
+              px={4}
+              py={3}
+              bg={selectedProfileId === profile.id ? selectedBg : 'transparent'}
+              borderLeft={selectedProfileId === profile.id ? selectedBorder : '4px solid transparent'}
+              cursor="pointer"
+              _hover={{ bg: hoverBg }}
+              onClick={() => {
+                if (isNumber) {
+                  onSelect(profile.id);
+                }
+              }}
+              display="flex"
+              alignItems="center"
+            >
+              <Avatar size="sm" name={profile.name} src={profile.avatar} mr={2} />
+              <Text 
+                fontWeight={selectedProfileId === profile.id ? 'bold' : 'normal'}
+                color={selectedProfileId === profile.id ? selectedTextColor : undefined}
+              >
+                {profile.name}
+              </Text>
+            </Box>
+          );
+        })}
+        
+        {/* 加载更多按钮 */}
+        {hasMore && (
+          <Flex justify="center" py={2}>
+            <Button 
+              size="sm" 
+              isLoading={loadingMore} 
+              onClick={loadMore}
+              variant="ghost"
+              width="90%"
+            >
+              加载更多
+            </Button>
+          </Flex>
+        )}
+        
+        {/* 显示档案总数 */}
+        {total > 0 && (
+          <Text fontSize="xs" color="gray.500" textAlign="center" py={2}>
+            �?{total} 个档�?          </Text>
+        )}
+      </VStack>
+    </Box>
+  );
+};
+
+export default ProfileSidebar; 

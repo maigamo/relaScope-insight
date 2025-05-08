@@ -11,22 +11,6 @@ import {
   DatabaseService as IpcDatabaseService 
 } from './ipc';
 
-// 导入原始类型定义
-import type { 
-  ConfigGetRequest,
-  ConfigSetRequest,
-  DBQueryRequest,
-  IPCResponse 
-} from '../../common/types/ipc';
-
-// 导出类型定义（确保原有import语句仍然有效）
-export type { 
-  ConfigGetRequest,
-  ConfigSetRequest,
-  DBQueryRequest,
-  IPCResponse 
-};
-
 // 导出IPC服务核心类（保持原有接口兼容）
 export { ipcService };
 
@@ -34,3 +18,6 @@ export { ipcService };
 export const ConfigService = IpcConfigService;
 export const AppService = IpcAppService;
 export const DatabaseService = IpcDatabaseService;
+
+// 导出所有类型（确保原有import语句仍然有效）
+export * from '../../../common/types/ipc';
