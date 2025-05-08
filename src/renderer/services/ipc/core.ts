@@ -24,6 +24,14 @@ class IpcService {
       };
     }
     
+    // 处理数组格式 - 直接返回数据
+    if (Array.isArray(response)) {
+      return {
+        success: true,
+        data: response as T
+      };
+    }
+    
     // 处理直接返回的数据对象或数组
     if (response !== null && response !== undefined) {
       return {

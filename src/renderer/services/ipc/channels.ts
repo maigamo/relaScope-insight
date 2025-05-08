@@ -46,6 +46,19 @@ export const DB_CHANNELS = {
     DELETE: 'db:quote:delete',
     SEARCH: 'db:quote:search',
     GET_BY_PROFILE: 'db:quote:getByProfile'
+  },
+  
+  // 经历相关频道
+  EXPERIENCE: {
+    GET_ALL: 'db:experience:getAll',
+    GET_BY_ID: 'db:experience:getById',
+    CREATE: 'db:experience:create',
+    UPDATE: 'db:experience:update',
+    DELETE: 'db:experience:delete',
+    GET_BY_PROFILE: 'db:experience:getByProfile',
+    GET_TIMELINE: 'db:experience:getTimeline',
+    FIND_BY_TAG: 'db:experience:findByTag',
+    GET_RECENT: 'db:experience:getRecent'
   }
 };
 
@@ -70,11 +83,15 @@ export const QUOTE_CHANNELS = {
 
 // 经历相关操作通道
 export const EXPERIENCE_CHANNELS = {
-  CREATE: 'experience:create',
-  UPDATE: 'experience:update',
-  GET_BY_PROFILE: 'experience:get-by-profile',
-  DELETE: 'experience:delete',
-  GET_RECENT: 'experience:get-recent'
+  CREATE: 'db:experience:create',
+  UPDATE: 'db:experience:update',
+  GET_ALL: 'db:experience:getAll',
+  GET_BY_ID: 'db:experience:getById',
+  GET_BY_PROFILE: 'db:experience:getByProfile',
+  DELETE: 'db:experience:delete',
+  GET_RECENT: 'db:experience:getRecent',
+  GET_TIMELINE: 'db:experience:getTimeline',
+  FIND_BY_TAG: 'db:experience:findByTag'
 };
 
 // 分析相关操作通道

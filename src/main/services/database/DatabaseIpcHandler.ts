@@ -1,7 +1,9 @@
 ﻿import { ipcMain } from 'electron';
 import { IPCResponse } from '../../../common/types/ipc';
-import { DB_CHANNELS } from '../../../common/constants/ipc';
 import { DatabaseService } from './DatabaseService';
+
+// 使用最新的DB_CHANNELS定义，从renderer中导入以确保一致性
+import { DB_CHANNELS } from '../../../renderer/services/ipc/channels';
 
 /**
  * 数据库IPC处理器类
@@ -240,7 +242,106 @@ export class DatabaseIpcHandler {
    * 注册经验相关处理函数
    */
   private registerExperienceHandlers(): void {
-    // 此处添加经验相关处理函数
+    // 获取全部经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.GET_ALL, async () => {
+      try {
+        const experiences = await this.dbService.getExperienceDAO().findAll();
+        return { success: true, data: experiences } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取经历列表失败: ${error.message}`);
+        return { success: false, error: `获取经历列表失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 根据ID获取经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.GET_BY_ID, async (_, id: number) => {
+      try {
+        const experience = await this.dbService.getExperienceDAO().findById(id);
+        return { success: true, data: experience } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取ID为${id}的经历失败: ${error.message}`);
+        return { success: false, error: `获取经历详情失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 创建经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.CREATE, async (_, experience: any) => {
+      try {
+        const newExperience = await this.dbService.getExperienceDAO().create(experience);
+        return { success: true, data: newExperience } as IPCResponse;
+      } catch (error: any) {
+        console.error(`创建经历失败: ${error.message}`);
+        return { success: false, error: `创建经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 更新经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.UPDATE, async (_, params: { id: number, experience: any }) => {
+      try {
+        const { id, experience } = params;
+        const success = await this.dbService.getExperienceDAO().update(id, experience);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`更新经历失败: ${error.message}`);
+        return { success: false, error: `更新经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 删除经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.DELETE, async (_, id: number) => {
+      try {
+        const success = await this.dbService.getExperienceDAO().delete(id);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`删除经历失败: ${error.message}`);
+        return { success: false, error: `删除经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 按profileId获取经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.GET_BY_PROFILE, async (_, profileId: number) => {
+      try {
+        const experiences = await this.dbService.getExperienceDAO().findByProfileId(profileId);
+        return { success: true, data: experiences } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取个人档案ID为${profileId}的经历失败: ${error.message}`);
+        return { success: false, error: `获取个人档案经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 获取经历时间轴
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.GET_TIMELINE, async (_, profileId: number) => {
+      try {
+        const timeline = await this.dbService.getExperienceDAO().getTimelineByProfileId(profileId);
+        return { success: true, data: timeline } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取个人档案ID为${profileId}的经历时间轴失败: ${error.message}`);
+        return { success: false, error: `获取经历时间轴失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 按标签搜索经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.FIND_BY_TAG, async (_, params: { tag: string, profileId?: number }) => {
+      try {
+        const { tag, profileId } = params;
+        const experiences = await this.dbService.getExperienceDAO().findByTag(tag, profileId);
+        return { success: true, data: experiences } as IPCResponse;
+      } catch (error: any) {
+        console.error(`按标签搜索经历失败: ${error.message}`);
+        return { success: false, error: `按标签搜索经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 获取最近创建的经历
+    ipcMain.handle(DB_CHANNELS.EXPERIENCE.GET_RECENT, async (_, limit: number = 5) => {
+      try {
+        const experiences = await this.dbService.getExperienceDAO().getRecent(limit);
+        return { success: true, data: experiences } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取最近经历失败: ${error.message}`);
+        return { success: false, error: `获取最近经历失败: ${error.message}` } as IPCResponse;
+      }
+    });
   }
 
   /**

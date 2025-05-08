@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Box, Flex, useDisclosure, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import ProfileSidebar from './components/ProfileSidebar';
 import QuotesList from './components/QuotesList';
 import QuoteForm from './components/QuoteForm';
@@ -18,6 +19,7 @@ const container = {
 };
 
 const QuotesPage: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null);
   const { isOpen: isFormOpen, onOpen: onFormOpen, onClose: onFormClose } = useDisclosure();
@@ -31,7 +33,7 @@ const QuotesPage: React.FC = () => {
   const handleAddQuote = () => {
     if (!selectedProfileId) {
       toast({
-        title: '请先选择档案',
+        title: t('quotes.selectProfile'),
         status: 'warning',
         duration: 3000,
         isClosable: true,
@@ -81,7 +83,7 @@ const QuotesPage: React.FC = () => {
             onFormClose();
             refreshQuotes();
             toast({
-              title: '保存成功',
+              title: t('quotes.createSuccess'),
               status: 'success',
               duration: 2000,
             });

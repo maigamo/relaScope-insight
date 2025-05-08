@@ -5,6 +5,7 @@ import {
   AlertDialogOverlay
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ipcService } from '../../../services/ipc.service';
 import { DeleteIcon } from '@chakra-ui/icons';
 
@@ -20,6 +21,7 @@ export interface QuotesListRef {
 }
 
 const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAddClick, onViewDetail }, ref) => {
+  const { t } = useTranslation();
   const [quotes, setQuotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,14 +79,14 @@ const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAd
       // 删除成功后刷新列表
       await fetchQuotes();
       toast({
-        title: '删除成功',
+        title: t('quotes.deleteSuccess'),
         status: 'success',
         duration: 2000,
       });
     } catch (err: any) {
       toast({
-        title: '删除失败',
-        description: err?.message || '出现错误，请重试',
+        title: t('quotes.deleteError', '删除失败'),
+        description: err?.message || t('error.general'),
         status: 'error',
         duration: 3000,
       });
@@ -98,7 +100,7 @@ const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAd
   if (profileId === null) {
     return (
       <Box textAlign="center" p={4}>
-        <Text color="gray.500">请选择一个档案以查看语录</Text>
+        <Text color="gray.500">{t('quotes.selectProfile')}</Text>
       </Box>
     );
   }
@@ -125,8 +127,8 @@ const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAd
   if (quotes.length === 0) {
     return (
       <Box p={4} textAlign="center">
-        <Text mb={4}>该档案还没有语录</Text>
-        <Button colorScheme="blue" onClick={onAddClick}>添加语录</Button>
+        <Text mb={4}>{t('quotes.empty')}</Text>
+        <Button colorScheme="blue" onClick={onAddClick}>{t('quotes.add')}</Button>
       </Box>
     );
   }
@@ -134,8 +136,8 @@ const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAd
   return (
     <Box w="100%">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Text fontWeight="bold" fontSize="lg">语录列表</Text>
-        <Button size="sm" colorScheme="blue" onClick={onAddClick}>添加语录</Button>
+        <Text fontWeight="bold" fontSize="lg">{t('quotes.title')}</Text>
+        <Button size="sm" colorScheme="blue" onClick={onAddClick}>{t('quotes.add')}</Button>
       </Box>
 
       <VStack align="stretch" spacing={2}>
@@ -182,19 +184,19 @@ const QuotesList = forwardRef<QuotesListRef, QuotesListProps>(({ profileId, onAd
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              删除语录
+              {t('quotes.delete')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              确定要删除这条语录吗？此操作无法撤销。
+              {t('quotes.confirmDelete')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={() => setIsDeleteAlertOpen(false)}>
-                取消
+                {t('common.cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDeleteQuote} ml={3}>
-                删除
+                {t('common.delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

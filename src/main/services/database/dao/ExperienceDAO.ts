@@ -72,7 +72,18 @@ export class ExperienceDAO extends BaseDAO<Experience> {
       
       const results = await this.db?.all<Experience[]>(query, profileId, pageSize, offset);
       
-      return results || [];
+      // 添加驼峰式字段名，确保与前端兼容
+      const formattedResults = (results || []).map(exp => {
+        return {
+          ...exp,
+          profileId: exp.profile_id,
+          startDate: exp.date,
+          createdAt: exp.created_at,
+          updatedAt: exp.updated_at
+        };
+      });
+      
+      return formattedResults;
     } catch (error) {
       console.error(`查找关联到个人信息ID${profileId}的经历时出错:`, error);
       throw error;
@@ -192,7 +203,7 @@ export class ExperienceDAO extends BaseDAO<Experience> {
       
       // 获取所有带日期的经历
       const query = `
-        SELECT id, title, description, date, location
+        SELECT id, title, description, date, location, tags, created_at, updated_at
         FROM experiences
         WHERE profile_id = ? AND date IS NOT NULL
         ORDER BY date DESC
@@ -208,11 +219,19 @@ export class ExperienceDAO extends BaseDAO<Experience> {
           const date = new Date(experience.date);
           const year = date.getFullYear().toString();
           
+          // 添加驼峰式字段名
+          const enhancedExp = {
+            ...experience,
+            startDate: experience.date,
+            createdAt: experience.created_at,
+            updatedAt: experience.updated_at
+          };
+          
           if (!timeline[year]) {
             timeline[year] = [];
           }
           
-          timeline[year].push(experience);
+          timeline[year].push(enhancedExp);
         } catch (e) {
           // 忽略无效日期
           console.warn(`经历ID ${experience.id} 的日期格式无效:`, experience.date);
@@ -222,6 +241,33 @@ export class ExperienceDAO extends BaseDAO<Experience> {
       return timeline;
     } catch (error) {
       console.error(`获取个人信息ID${profileId}的经历时间轴时出错:`, error);
+      throw error;
+    }
+  }
+
+  // 根据ID查找实体
+  public async findById(id: number): Promise<Experience | null> {
+    try {
+      if (!this.db) await this.initializeDatabase();
+      
+      const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
+      const result = await this.db?.get<Experience>(query, id);
+      
+      if (result) {
+        // 添加驼峰式字段名，确保与前端兼容
+        result.profileId = result.profile_id;
+        
+        if (result.date) {
+          result.startDate = result.date;
+        }
+        
+        result.createdAt = result.created_at;
+        result.updatedAt = result.updated_at;
+      }
+      
+      return result || null;
+    } catch (error) {
+      console.error(`查找ID为${id}的${this.tableName}记录时出错:`, error);
       throw error;
     }
   }

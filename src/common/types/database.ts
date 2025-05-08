@@ -49,7 +49,7 @@ export interface Experience {
   id?: number;
   profileId: number;
   title: string;
-  type: string; // 工作、教育、生活等类型
+  type?: string; // 工作、教育、生活等类型
   organization?: string;
   startDate?: string;
   endDate?: string;
@@ -59,6 +59,12 @@ export interface Experience {
   tags?: string;
   createdAt?: string;
   updatedAt?: string;
+  
+  // 兼容旧版本字段
+  profile_id?: number;
+  date?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // 分析实体

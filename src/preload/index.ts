@@ -28,6 +28,9 @@ const APP_CHANNELS = {
 const DB_CHANNELS = {
   INITIALIZE: 'db:initialize',
   EXECUTE_QUERY: 'db:executeQuery',
+  CREATE_BACKUP: 'db:create-backup',
+  RESTORE_BACKUP: 'db:restore-backup',
+  GET_BACKUP_FILES: 'db:get-backup-files',
   
   // 配置文件相关频道
   PROFILE: {
@@ -49,6 +52,19 @@ const DB_CHANNELS = {
     DELETE: 'db:quote:delete',
     SEARCH: 'db:quote:search',
     GET_BY_PROFILE: 'db:quote:getByProfile'
+  },
+  
+  // 经历相关频道
+  EXPERIENCE: {
+    GET_ALL: 'db:experience:getAll',
+    GET_BY_ID: 'db:experience:getById',
+    CREATE: 'db:experience:create',
+    UPDATE: 'db:experience:update',
+    DELETE: 'db:experience:delete',
+    GET_BY_PROFILE: 'db:experience:getByProfile',
+    GET_TIMELINE: 'db:experience:getTimeline',
+    FIND_BY_TAG: 'db:experience:findByTag',
+    GET_RECENT: 'db:experience:getRecent'
   }
 };
 
@@ -76,11 +92,11 @@ const DB_API_CHANNELS = {
   QUOTE_GET_RECENT: 'quote:get-recent',
   
   // Experience操作
-  EXPERIENCE_CREATE: 'experience:create',
-  EXPERIENCE_UPDATE: 'experience:update',
-  EXPERIENCE_GET_BY_PROFILE: 'experience:get-by-profile',
-  EXPERIENCE_DELETE: 'experience:delete',
-  EXPERIENCE_GET_RECENT: 'experience:get-recent',
+  EXPERIENCE_CREATE: 'db:experience:create',
+  EXPERIENCE_UPDATE: 'db:experience:update',
+  EXPERIENCE_GET_BY_PROFILE: 'db:experience:getByProfile',
+  EXPERIENCE_DELETE: 'db:experience:delete',
+  EXPERIENCE_GET_RECENT: 'db:experience:getRecent',
   
   // Analysis操作
   ANALYSIS_CREATE: 'analysis:create',
