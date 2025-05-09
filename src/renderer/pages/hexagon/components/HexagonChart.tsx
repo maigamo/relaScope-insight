@@ -72,9 +72,7 @@ const HexagonChart: React.FC<HexagonChartProps> = ({
             angle={30} 
             domain={[0, 10]} 
             tickCount={6}
-            tick={{
-              fill: useColorModeValue('#666', '#aaa')
-            }}
+            tick={false}
           />
           <Radar
             name="六边形人性模型"

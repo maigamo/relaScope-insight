@@ -4,6 +4,7 @@ import { DatabaseService } from './DatabaseService';
 
 // 使用最新的DB_CHANNELS定义，从renderer中导入以确保一致性
 import { DB_CHANNELS } from '../../../renderer/services/ipc/channels';
+import { IPC_CHANNELS } from '../../../common/constants/ipcChannels';
 
 /**
  * 数据库IPC处理器类
@@ -356,7 +357,7 @@ export class DatabaseIpcHandler {
    */
   private registerHexagonModelHandlers(): void {
     // 获取所有六边形模型
-    ipcMain.handle('db:hexagon:get-all', async () => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.GET_ALL, async () => {
       try {
         const models = await this.dbService.getHexagonModelDAO().findAll();
         return { success: true, data: models } as IPCResponse;
@@ -367,7 +368,7 @@ export class DatabaseIpcHandler {
     });
 
     // 根据ID获取六边形模型
-    ipcMain.handle('db:hexagon:get-by-id', async (_, { id }: { id: number }) => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.GET_BY_ID, async (_, { id }: { id: number }) => {
       try {
         const model = await this.dbService.getHexagonModelDAO().findById(id);
         return { success: true, data: model } as IPCResponse;
@@ -378,7 +379,7 @@ export class DatabaseIpcHandler {
     });
 
     // 根据档案ID获取六边形模型
-    ipcMain.handle('db:hexagon:get-by-profile', async (_, { profileId }: { profileId: number }) => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.GET_BY_PROFILE, async (_, { profileId }: { profileId: number }) => {
       try {
         const models = await this.dbService.getHexagonModelDAO().findByProfileId(profileId);
         return { success: true, data: models } as IPCResponse;
@@ -389,7 +390,7 @@ export class DatabaseIpcHandler {
     });
 
     // 创建六边形模型
-    ipcMain.handle('db:hexagon:create', async (_, model: any) => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.CREATE, async (_, model: any) => {
       try {
         const newModel = await this.dbService.getHexagonModelDAO().create(model);
         return { success: true, data: newModel } as IPCResponse;
@@ -400,7 +401,7 @@ export class DatabaseIpcHandler {
     });
 
     // 更新六边形模型
-    ipcMain.handle('db:hexagon:update', async (_, model: any) => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.UPDATE, async (_, model: any) => {
       try {
         const success = await this.dbService.getHexagonModelDAO().update(model.id, model);
         return { success: true, data: success } as IPCResponse;
@@ -411,7 +412,7 @@ export class DatabaseIpcHandler {
     });
 
     // 删除六边形模型
-    ipcMain.handle('db:hexagon:delete', async (_, { id }: { id: number }) => {
+    ipcMain.handle(IPC_CHANNELS.DB.HEXAGON.DELETE, async (_, { id }: { id: number }) => {
       try {
         const success = await this.dbService.getHexagonModelDAO().delete(id);
         return { success: true, data: success } as IPCResponse;

@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { ipcService } from '../../../services/ipc';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faChartLine, faQuoteLeft, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import { HexagonService } from '../../../services/ipc/hexagon.service';
 
 // 六边形模型数据类型
 interface HexagonModelData {
@@ -107,17 +108,8 @@ const HexagonModelDetail: React.FC<HexagonModelDetailProps> = ({ isOpen, onClose
         setLoading(true);
         setError(null);
         
-        // 获取模型数据
-        const response = await ipcService.invoke('db:hexagon:getById', { id: modelId });
-        
-        let modelData = null;
-        if (response && response.success && response.data) {
-          modelData = response.data;
-        } else if (response && !response.success) {
-          throw new Error(response.error || '获取模型失败');
-        } else if (Array.isArray(response) && response.length > 0) {
-          modelData = response[0];
-        }
+        // 使用服务层API获取模型数据
+        const modelData = await HexagonService.getHexagonModelById(modelId);
         
         if (modelData) {
           setModel(modelData);
@@ -145,6 +137,8 @@ const HexagonModelDetail: React.FC<HexagonModelDetailProps> = ({ isOpen, onClose
           } else if (Array.isArray(experiencesResponse)) {
             setRelatedExperiences(experiencesResponse.slice(0, 5));
           }
+        } else {
+          throw new Error('未找到模型数据');
         }
       } catch (err: any) {
         console.error('获取模型详情失败:', err);

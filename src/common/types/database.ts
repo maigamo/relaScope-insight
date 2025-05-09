@@ -87,10 +87,10 @@ export interface HexagonModel {
   title: string;
   security: number; // 安全感 0-10
   achievement: number; // 成就感 0-10
-  pleasure: number; // 愉悦感 0-10
-  autonomy: number; // 自主性 0-10
-  connection: number; // 连接感 0-10
-  meaning: number; // 意义感 0-10
+  freedom: number; // 自由感 0-10
+  belonging: number; // 归属感 0-10
+  novelty: number; // 新奇感 0-10
+  control: number; // 掌控感 0-10
   notes?: string;
   createdAt?: string;
   updatedAt?: string;

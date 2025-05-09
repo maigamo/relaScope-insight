@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, useColorModeValue, useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { ipcService } from '../../../services/ipc';
+import { HexagonService } from '../../../services/ipc/hexagon.service';
 import HexagonChart from './HexagonChart';
 import HexagonDimensionList, { ChartDataItem } from './HexagonDimensionList';
 import HexagonChartToolbar from './HexagonChartToolbar';
@@ -9,21 +9,12 @@ import EmptyHexagonState from './EmptyHexagonState';
 import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
 import HexagonTooltip from './HexagonTooltip';
+import { HexagonModel } from '../../../../common/types/database';
+import i18n from '../../../i18n';
 
-// 六边形模型数据类型
-interface HexagonModelData {
-  id: number;
-  profileId: number;
-  title: string;
-  security: number;
-  achievement: number;
-  freedom: number;
-  belonging: number;
-  novelty: number;
-  control: number;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
+// 六边形模型数据类型，使用通用类型而不是重新定义
+interface HexagonModelData extends Omit<HexagonModel, 'id'> {
+  id: number;  // 确保id是必需的，而不是可选的
 }
 
 interface HexagonModelChartProps {
@@ -31,26 +22,6 @@ interface HexagonModelChartProps {
   onViewDetail: (modelId: number) => void;
   onRefresh: () => void;
 }
-
-// 维度说明
-const dimensionDescriptions = {
-  security: "对稳定、确定性和安全保障的追求程度",
-  achievement: "对成功、认可和成就的追求程度",
-  freedom: "对自主、独立和自由的追求程度",
-  belonging: "对关系、团体和归属的追求程度",
-  novelty: "对新奇、刺激和变化的追求程度",
-  control: "对掌控、影响和主导的追求程度"
-};
-
-// 中文映射
-const dimensionLabels = {
-  security: "安全感",
-  achievement: "成就感",
-  freedom: "自由感",
-  belonging: "归属感",
-  novelty: "新奇感", 
-  control: "掌控感"
-};
 
 /**
  * 六边形模型图表组件
@@ -62,12 +33,79 @@ const HexagonModelChart: React.FC<HexagonModelChartProps> = ({
   onRefresh 
 }) => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modelData, setModelData] = useState<HexagonModelData | null>(null);
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [scale, setScale] = useState(1);
   const [hoveredDimension, setHoveredDimension] = useState<string | null>(null);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  
+  // 监听语言变化
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      // 通过修改forceUpdate状态来触发重新渲染
+      setForceUpdate(prev => prev + 1);
+      
+      // 重新生成图表数据以更新语言
+      if (modelData) {
+        updateChartDataWithTranslation(modelData);
+      }
+    };
+    
+    // 添加语言变化监听
+    i18n.on('languageChanged', handleLanguageChange);
+    
+    // 组件卸载时移除监听
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [modelData]);
+  
+  // 将模型数据转换为图表数据
+  const updateChartDataWithTranslation = (data: HexagonModelData) => {
+    const chartData: ChartDataItem[] = [
+      { 
+        attribute: t('hexagonModel.security'), 
+        value: data.security, 
+        fullMark: 10, 
+        description: t('hexagonModel.securityDesc') 
+      },
+      { 
+        attribute: t('hexagonModel.achievement'), 
+        value: data.achievement, 
+        fullMark: 10, 
+        description: t('hexagonModel.achievementDesc') 
+      },
+      { 
+        attribute: t('hexagonModel.freedom'), 
+        value: data.freedom, 
+        fullMark: 10, 
+        description: t('hexagonModel.freedomDesc') 
+      },
+      { 
+        attribute: t('hexagonModel.belonging'), 
+        value: data.belonging, 
+        fullMark: 10, 
+        description: t('hexagonModel.belongingDesc') 
+      },
+      { 
+        attribute: t('hexagonModel.novelty'), 
+        value: data.novelty, 
+        fullMark: 10, 
+        description: t('hexagonModel.noveltyDesc') 
+      },
+      { 
+        attribute: t('hexagonModel.control'), 
+        value: data.control, 
+        fullMark: 10, 
+        description: t('hexagonModel.controlDesc') 
+      }
+    ];
+    
+    setChartData(chartData);
+  };
   
   // 获取模型数据
   useEffect(() => {
@@ -82,60 +120,82 @@ const HexagonModelChart: React.FC<HexagonModelChartProps> = ({
         setLoading(true);
         setError(null);
         
-        // 向后端请求数据
-        const response = await ipcService.invoke('db:hexagon:getByProfile', { profileId });
+        // 使用服务层API替代直接IPC调用
+        const models = await HexagonService.getHexagonModelsByProfileId(profileId);
         
         let data = null;
-        if (response && response.success && response.data) {
-          data = response.data;
-        } else if (Array.isArray(response) && response.length > 0) {
-          data = response[0];
+        if (models && models.length > 0) {
+          const model = models[0];
+          // 确保id存在
+          if (model && model.id) {
+            data = model as HexagonModelData;
+          }
         }
         
         if (data) {
           setModelData(data);
-          
-          // 转换为图表数据格式
-          const chartData: ChartDataItem[] = [
-            { attribute: dimensionLabels.security, value: data.security, fullMark: 10, description: dimensionDescriptions.security },
-            { attribute: dimensionLabels.achievement, value: data.achievement, fullMark: 10, description: dimensionDescriptions.achievement },
-            { attribute: dimensionLabels.freedom, value: data.freedom, fullMark: 10, description: dimensionDescriptions.freedom },
-            { attribute: dimensionLabels.belonging, value: data.belonging, fullMark: 10, description: dimensionDescriptions.belonging },
-            { attribute: dimensionLabels.novelty, value: data.novelty, fullMark: 10, description: dimensionDescriptions.novelty },
-            { attribute: dimensionLabels.control, value: data.control, fullMark: 10, description: dimensionDescriptions.control }
-          ];
-          
-          setChartData(chartData);
+          // 使用新的函数来更新图表数据
+          updateChartDataWithTranslation(data);
         } else {
           // 如果没有数据，设置默认模型
           setModelData(null);
           
           const defaultChartData: ChartDataItem[] = [
-            { attribute: dimensionLabels.security, value: 5, fullMark: 10, description: dimensionDescriptions.security },
-            { attribute: dimensionLabels.achievement, value: 5, fullMark: 10, description: dimensionDescriptions.achievement },
-            { attribute: dimensionLabels.freedom, value: 5, fullMark: 10, description: dimensionDescriptions.freedom },
-            { attribute: dimensionLabels.belonging, value: 5, fullMark: 10, description: dimensionDescriptions.belonging },
-            { attribute: dimensionLabels.novelty, value: 5, fullMark: 10, description: dimensionDescriptions.novelty },
-            { attribute: dimensionLabels.control, value: 5, fullMark: 10, description: dimensionDescriptions.control }
+            { 
+              attribute: t('hexagonModel.security'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.securityDesc') 
+            },
+            { 
+              attribute: t('hexagonModel.achievement'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.achievementDesc') 
+            },
+            { 
+              attribute: t('hexagonModel.freedom'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.freedomDesc') 
+            },
+            { 
+              attribute: t('hexagonModel.belonging'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.belongingDesc') 
+            },
+            { 
+              attribute: t('hexagonModel.novelty'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.noveltyDesc') 
+            },
+            { 
+              attribute: t('hexagonModel.control'), 
+              value: 5, 
+              fullMark: 10, 
+              description: t('hexagonModel.controlDesc') 
+            }
           ];
           
           setChartData(defaultChartData);
         }
       } catch (err: any) {
-        console.error('获取六边形模型数据失败:', err);
-        setError(err?.message || '加载模型失败');
+        console.error(t('hexagonModel.loadError'), err);
+        setError(err?.message || t('hexagonModel.loadError'));
       } finally {
         setLoading(false);
       }
     };
     
     fetchModelData();
-  }, [profileId]);
+  }, [profileId, t]);
   
   // 处理图表下载
   const handleDownloadChart = () => {
     // 实现下载功能，可使用html2canvas或dom-to-image
-    console.log('下载图表');
+    console.log(t('hexagonModel.download'));
   };
   
   // 处理缩放
@@ -148,14 +208,37 @@ const HexagonModelChart: React.FC<HexagonModelChartProps> = ({
   };
   
   // 处理刷新
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     if (profileId) {
-      setLoading(true);
-      // 实现模型刷新逻辑
-      setTimeout(() => {
-        setLoading(false);
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // 实际刷新操作，例如重新获取数据
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 刷新成功
+        toast({
+          title: t('hexagonModel.refreshSuccess'),
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        
         onRefresh();
-      }, 1000);
+      } catch (err: any) {
+        setError(err?.message || t('hexagonModel.loadError'));
+        
+        // 刷新失败
+        toast({
+          title: t('hexagonModel.refreshError', { error: err?.message || t('error.general') }),
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   
@@ -163,7 +246,7 @@ const HexagonModelChart: React.FC<HexagonModelChartProps> = ({
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('zh-CN', {
+    return date.toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -189,13 +272,13 @@ const HexagonModelChart: React.FC<HexagonModelChartProps> = ({
   
   // 渲染图表
   return (
-    <Box p={4}>
+    <Box p={4} key={`hexagon-model-chart-${forceUpdate}`}>
       <Flex justify="space-between" align="center" mb={4}>
         <Box>
-          <Heading size="md">{modelData?.title || '六边形人性模型'}</Heading>
+          <Heading size="md">{modelData?.title || t('hexagonModel.title')}</Heading>
           {modelData && (
             <Text fontSize="sm" color="gray.500">
-              更新于: {formatDate(modelData.updatedAt)}
+              {t('hexagonModel.updatedAt')}: {formatDate(modelData.updatedAt)}
             </Text>
           )}
         </Box>

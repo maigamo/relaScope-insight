@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 雷达图工具提示组件属性
@@ -14,6 +15,7 @@ interface HexagonTooltipProps {
  * 用于显示维度详细信息的悬停提示
  */
 const HexagonTooltip: React.FC<HexagonTooltipProps> = ({ active, payload }) => {
+  const { t } = useTranslation();
   const tooltipBackground = useColorModeValue('white', 'gray.800');
   
   if (active && payload && payload.length) {
@@ -28,7 +30,7 @@ const HexagonTooltip: React.FC<HexagonTooltipProps> = ({ active, payload }) => {
         borderColor="gray.200"
       >
         <Text fontWeight="bold">{data.attribute}</Text>
-        <Text>得分: {data.value}/10</Text>
+        <Text>{t('hexagonModel.score')}: {data.value}/10</Text>
         <Text fontSize="sm" maxW="200px">{data.description}</Text>
       </Box>
     );

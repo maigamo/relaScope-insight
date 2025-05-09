@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Flex,
@@ -7,6 +7,7 @@ import {
   Heading,
   useColorModeValue
 } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 // 图表数据类型
 export interface ChartDataItem {
@@ -31,6 +32,13 @@ const HexagonDimensionList: React.FC<HexagonDimensionListProps> = ({
   hoveredDimension, 
   onHover 
 }) => {
+  const { t } = useTranslation();
+  
+  // 预先计算所有的颜色值，避免在渲染时调用useColorModeValue
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const hoverBgColor = useColorModeValue('green.50', 'green.900');
+  const textColor = useColorModeValue('gray.600', 'gray.400');
+  
   // 根据得分返回不同的颜色
   const getScoreColorScheme = (score: number) => {
     if (score >= 7) return 'green';
@@ -40,21 +48,20 @@ const HexagonDimensionList: React.FC<HexagonDimensionListProps> = ({
 
   return (
     <>
-      <Heading size="sm" mb={3}>维度解析</Heading>
+      <Heading size="sm" mb={3}>{t('hexagonModel.dimensions')}</Heading>
       <Box 
         borderRadius="md"
         boxShadow="sm"
         borderWidth="1px"
-        borderColor={useColorModeValue('gray.200', 'gray.700')}
+        borderColor={borderColor}
       >
         {chartData.map((item) => (
           <Box 
             key={item.attribute}
             p={3}
             _notLast={{ borderBottomWidth: '1px' }}
-            borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-            bg={hoveredDimension === item.attribute ? 
-              useColorModeValue('green.50', 'green.900') : ''}
+            borderBottomColor={borderColor}
+            bg={hoveredDimension === item.attribute ? hoverBgColor : ''}
             transition="background 0.2s"
             onMouseEnter={() => onHover(item.attribute)}
             onMouseLeave={() => onHover(null)}
@@ -77,7 +84,7 @@ const HexagonDimensionList: React.FC<HexagonDimensionListProps> = ({
                 {item.value}/10
               </Badge>
             </Flex>
-            <Text mt={1} fontSize="sm" color={useColorModeValue('gray.600', 'gray.400')}>
+            <Text mt={1} fontSize="sm" color={textColor}>
               {item.description}
             </Text>
           </Box>

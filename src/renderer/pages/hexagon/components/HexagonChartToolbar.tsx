@@ -8,14 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faDownload, 
   faSyncAlt, 
-  faSearchPlus, 
-  faSearchMinus,
   faHistory
 } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 六边形图表工具栏组件
- * 提供缩放、刷新、下载和查看历史等功能
+ * 提供刷新、下载和查看历史等功能
  */
 interface HexagonChartToolbarProps {
   onZoomIn: () => void;
@@ -34,44 +33,30 @@ const HexagonChartToolbar: React.FC<HexagonChartToolbarProps> = ({
   onViewHistory,
   showHistory
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <HStack spacing={2}>
-      <Tooltip label="放大">
+      <Tooltip label={t('hexagonModel.refresh')}>
         <IconButton
-          aria-label="放大"
-          icon={<FontAwesomeIcon icon={faSearchPlus} />}
-          size="sm"
-          onClick={onZoomIn}
-        />
-      </Tooltip>
-      <Tooltip label="缩小">
-        <IconButton
-          aria-label="缩小"
-          icon={<FontAwesomeIcon icon={faSearchMinus} />}
-          size="sm"
-          onClick={onZoomOut}
-        />
-      </Tooltip>
-      <Tooltip label="刷新数据">
-        <IconButton
-          aria-label="刷新"
+          aria-label={t('hexagonModel.refresh')}
           icon={<FontAwesomeIcon icon={faSyncAlt} />}
           size="sm"
           onClick={onRefresh}
         />
       </Tooltip>
-      <Tooltip label="下载图表">
+      <Tooltip label={t('hexagonModel.download')}>
         <IconButton
-          aria-label="下载"
+          aria-label={t('hexagonModel.download')}
           icon={<FontAwesomeIcon icon={faDownload} />}
           size="sm"
           onClick={onDownload}
         />
       </Tooltip>
       {showHistory && (
-        <Tooltip label="历史记录">
+        <Tooltip label={t('hexagonModel.history')}>
           <IconButton
-            aria-label="历史记录"
+            aria-label={t('hexagonModel.history')}
             icon={<FontAwesomeIcon icon={faHistory} />}
             size="sm"
             onClick={onViewHistory}

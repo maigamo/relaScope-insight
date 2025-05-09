@@ -3,9 +3,9 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 // 导入翻译文件
-import zhTranslation from './locales/zh/translation.json';
-import enTranslation from './locales/en/translation.json';
-import jaTranslation from './locales/ja/translation.json';
+import zhTranslation from './locales/zh.json';
+import enTranslation from './locales/en.json';
+import jaTranslation from './locales/ja.json';
 
 // 初始化i18next
 i18n

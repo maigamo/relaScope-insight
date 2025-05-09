@@ -23,6 +23,8 @@ import { ipcService } from '../../../services/ipc';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { DB_CHANNELS } from '../../../services/ipc/channels';
+import i18n from '../../../i18n';
 
 interface Profile {
   id: number;
@@ -46,6 +48,7 @@ interface SearchBoxProps {
 }
 
 const SearchBox: React.FC<SearchBoxProps> = React.memo(({ searchQuery, onChange, onClear, onEnterPress }) => {
+  const { t } = useTranslation();
   const inputBg = useColorModeValue('white', 'gray.800');
   const iconColor = useColorModeValue('gray.500', 'gray.400');
   
@@ -63,7 +66,7 @@ const SearchBox: React.FC<SearchBoxProps> = React.memo(({ searchQuery, onChange,
           <SearchIcon color={iconColor} />
         </InputLeftElement>
         <Input
-          placeholder="搜索档案..."
+          placeholder={t('common.search')}
           value={searchQuery}
           onChange={onChange}
           onKeyDown={handleKeyDown}
@@ -153,6 +156,20 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
   const [hasMore, setHasMore] = useState(true);
   const [total, setTotal] = useState(0);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  
+  // 监听语言变化
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChange);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, []);
   
   // 获取档案数据的函数
   const fetchProfiles = async (pageNum: number, search: string, isLoadMore: boolean = false) => {
@@ -161,7 +178,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
       loadingState(true);
       setError(null);
       
-      const response = await ipcService.invoke('db:profile:getAll');
+      const response = await ipcService.invoke(DB_CHANNELS.PROFILE.GET_ALL);
       
       // 支持多种响应格式 - 直接返回数组或者{success,data}格式
       let profileData: Profile[] = [];
@@ -173,7 +190,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
       } else if (response && response.success && !response.data) {
         profileData = [];
       } else {
-        throw new Error('未知的响应格式');
+        throw new Error(t('profiles.unknownResponseFormat'));
       }
       
       const filteredData = search 
@@ -199,8 +216,8 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
       setTotal(total);
       setHasMore(endIdx < total);
     } catch (err: any) {
-      console.error(`加载档案出现异常:`, err);
-      setError(err?.message || '加载档案失败');
+      console.error(`${t('profiles.loadError')}:`, err);
+      setError(err?.message || t('profiles.loadError'));
     } finally {
       const loadingState = isLoadMore ? setLoadingMore : setLoading;
       loadingState(false);
@@ -279,7 +296,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
     return (
       <VStack spacing={4} align="center" justify="center" height="100%">
         <Spinner color="green.500" size="lg" thickness="3px" />
-        <Text>加载档案中...</Text>
+        <Text>{t('common.loading')}</Text>
       </VStack>
     );
   }
@@ -288,14 +305,14 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
   if (error) {
     return (
       <VStack spacing={4} align="center" justify="center" height="100%">
-        <Text color="red.500">出错了</Text>
+        <Text color="red.500">{t('common.error')}</Text>
         <Text>{error}</Text>
         <Button 
           colorScheme="green" 
           leftIcon={<FontAwesomeIcon icon={faSyncAlt} />}
           onClick={() => fetchProfiles(1, searchQuery)}
         >
-          重试
+          {t('common.retry')}
         </Button>
       </VStack>
     );
@@ -312,10 +329,10 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
           onEnterPress={handleEnterSearch}
         />
         <VStack spacing={4} align="center" justify="center" height="calc(100% - 50px)">
-          <Text>没有找到档案</Text>
+          <Text>{t('common.noResults')}</Text>
           {searchQuery && (
             <Button colorScheme="green" size="sm" onClick={clearSearch}>
-              清除搜索
+              {t('profiles.clearSearch')}
             </Button>
           )}
         </VStack>
@@ -325,7 +342,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
 
   // 渲染档案列表
   return (
-    <Box height="100%" position="relative">
+    <Box height="100%" position="relative" key={`profile-sidebar-${forceUpdate}`}>
       <SearchBox 
         searchQuery={searchQuery}
         onChange={handleSearchChange}
@@ -369,13 +386,13 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
         {loadingMore && (
           <Center py={4}>
             <Spinner size="sm" color="green.500" mr={2} />
-            <Text fontSize="sm">加载更多...</Text>
+            <Text fontSize="sm">{t('profiles.loadingMore')}</Text>
           </Center>
         )}
         
         {/* 显示总数据量 */}
         <Text fontSize="xs" color="gray.500" textAlign="center" mt={2} mb={2}>
-          共 {total} 个档案
+          {t('profiles.totalCount', { count: total })}
         </Text>
       </Box>
     </Box>
