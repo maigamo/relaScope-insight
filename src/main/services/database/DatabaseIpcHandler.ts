@@ -355,6 +355,95 @@ export class DatabaseIpcHandler {
    * 注册六边形模型相关处理函数
    */
   private registerHexagonModelHandlers(): void {
-    // 此处添加六边形模型相关处理函数
+    // 获取所有六边形模型
+    ipcMain.handle('db:hexagon:get-all', async () => {
+      try {
+        const models = await this.dbService.getHexagonModelDAO().findAll();
+        return { success: true, data: models } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取六边形模型列表失败: ${error.message}`);
+        return { success: false, error: `获取六边形模型列表失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 根据ID获取六边形模型
+    ipcMain.handle('db:hexagon:get-by-id', async (_, { id }: { id: number }) => {
+      try {
+        const model = await this.dbService.getHexagonModelDAO().findById(id);
+        return { success: true, data: model } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取ID为${id}的六边形模型失败: ${error.message}`);
+        return { success: false, error: `获取六边形模型详情失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 根据档案ID获取六边形模型
+    ipcMain.handle('db:hexagon:get-by-profile', async (_, { profileId }: { profileId: number }) => {
+      try {
+        const models = await this.dbService.getHexagonModelDAO().findByProfileId(profileId);
+        return { success: true, data: models } as IPCResponse;
+      } catch (error: any) {
+        console.error(`获取档案ID为${profileId}的六边形模型失败: ${error.message}`);
+        return { success: false, error: `获取档案的六边形模型失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 创建六边形模型
+    ipcMain.handle('db:hexagon:create', async (_, model: any) => {
+      try {
+        const newModel = await this.dbService.getHexagonModelDAO().create(model);
+        return { success: true, data: newModel } as IPCResponse;
+      } catch (error: any) {
+        console.error(`创建六边形模型失败: ${error.message}`);
+        return { success: false, error: `创建六边形模型失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 更新六边形模型
+    ipcMain.handle('db:hexagon:update', async (_, model: any) => {
+      try {
+        const success = await this.dbService.getHexagonModelDAO().update(model.id, model);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`更新六边形模型失败: ${error.message}`);
+        return { success: false, error: `更新六边形模型失败: ${error.message}` } as IPCResponse;
+      }
+    });
+
+    // 删除六边形模型
+    ipcMain.handle('db:hexagon:delete', async (_, { id }: { id: number }) => {
+      try {
+        const success = await this.dbService.getHexagonModelDAO().delete(id);
+        return { success: true, data: success } as IPCResponse;
+      } catch (error: any) {
+        console.error(`删除六边形模型失败: ${error.message}`);
+        return { success: false, error: `删除六边形模型失败: ${error.message}` } as IPCResponse;
+      }
+    });
+  }
+
+  // 以下是为了保持API兼容性，直接调用注册的处理函数
+  public getAllHexagonModels() {
+    return this.dbService.getHexagonModelDAO().findAll();
+  }
+
+  public getHexagonModelById(id: number) {
+    return this.dbService.getHexagonModelDAO().findById(id);
+  }
+
+  public getHexagonModelsByProfileId(profileId: number) {
+    return this.dbService.getHexagonModelDAO().findByProfileId(profileId);
+  }
+
+  public createHexagonModel(model: any) {
+    return this.dbService.getHexagonModelDAO().create(model);
+  }
+
+  public updateHexagonModel(model: any) {
+    return this.dbService.getHexagonModelDAO().update(model.id, model);
+  }
+
+  public deleteHexagonModel(id: number) {
+    return this.dbService.getHexagonModelDAO().delete(id);
   }
 } 

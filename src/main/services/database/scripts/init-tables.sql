@@ -186,4 +186,25 @@ CREATE TABLE IF NOT EXISTS activity_logs (
 
 -- 创建索引
 CREATE INDEX IF NOT EXISTS idx_activity_logs_user_id ON activity_logs (user_id);
-CREATE INDEX IF NOT EXISTS idx_activity_logs_created_time ON activity_logs (created_time); 
+CREATE INDEX IF NOT EXISTS idx_activity_logs_created_time ON activity_logs (created_time);
+
+-- 创建六边形模型表
+CREATE TABLE IF NOT EXISTS hexagon_models (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER NOT NULL,
+  title TEXT DEFAULT '六边形人性模型分析',
+  security REAL NOT NULL DEFAULT 5,
+  achievement REAL NOT NULL DEFAULT 5,
+  freedom REAL NOT NULL DEFAULT 5,
+  belonging REAL NOT NULL DEFAULT 5,
+  novelty REAL NOT NULL DEFAULT 5,
+  control REAL NOT NULL DEFAULT 5,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE CASCADE
+);
+
+-- 创建六边形模型表索引
+CREATE INDEX IF NOT EXISTS idx_hexagon_models_profile_id ON hexagon_models (profile_id);
+CREATE INDEX IF NOT EXISTS idx_hexagon_models_created_at ON hexagon_models (created_at); 

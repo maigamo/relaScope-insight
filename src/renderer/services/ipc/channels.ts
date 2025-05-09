@@ -105,11 +105,10 @@ export const ANALYSIS_CHANNELS = {
 
 // 六边形模型相关操作通道
 export const HEXAGON_CHANNELS = {
-  CREATE: 'hexagon:create',
-  UPDATE: 'hexagon:update',
-  GET_BY_PROFILE: 'hexagon:get-by-profile',
-  GET_LATEST: 'hexagon:get-latest',
-  GET_RECENT: 'hexagon:get-recent',
-  GET_AVERAGE: 'hexagon:get-average',
-  COMPARE: 'hexagon:compare'
+  CREATE: 'db:hexagon:create',
+  UPDATE: 'db:hexagon:update',
+  GET_ALL: 'db:hexagon:getAll',
+  GET_BY_ID: 'db:hexagon:getById',
+  GET_BY_PROFILE: 'db:hexagon:getByProfile',
+  DELETE: 'db:hexagon:delete'
 }; 

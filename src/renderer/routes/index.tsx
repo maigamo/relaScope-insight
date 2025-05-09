@@ -48,6 +48,7 @@ const Dashboard = React.lazy(() => import('../pages/Dashboard'));
 const ProfilesPage = React.lazy(() => import('../pages/profiles'));
 const QuotesPage = React.lazy(() => import('../pages/quotes/QuotesPage'));
 const ExperiencesPage = React.lazy(() => import('../pages/experiences/ExperiencesPage'));
+const HexagonPage = React.lazy(() => import('../pages/hexagon'));
 const AnalysisPage = React.lazy(() => import('../pages/analysis/AnalysisPage'));
 const SettingsPage = React.lazy(() => import('../pages/settings/SettingsPage'));
 const NotFoundPage = React.lazy(() => import('../pages/NotFoundPage'));
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: '/experiences',
         element: withErrorBoundary(ExperiencesPage, <SuspenseFallback message="加载经历..." />),
+      },
+      {
+        path: '/hexagon',
+        element: withErrorBoundary(HexagonPage, <SuspenseFallback message="加载六边形模型..." />),
       },
       {
         path: '/analysis',

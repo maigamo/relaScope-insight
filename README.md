@@ -186,26 +186,68 @@ npm run build
 - Established secure communication mechanism between main and renderer processes
 - メインプロセスとレンダラープロセス間の安全な通信メカニズムを確立
 
-### 🚧 阶段四：个人档案模块开发 (进行中) / Stage Four: Profile Module Development (In Progress) / ステージ4：プロファイルモジュールの開発（進行中）
-- 设计并实现了个人档案管理界面，支持档案列表和详情查看
-- Designed and implemented profile management interface with list and detail views
-- プロファイル管理インターフェースを設計・実装し、リストと詳細ビューをサポート
+### ✅ 阶段四：个人档案模块开发 / Stage Four: Profile Module Development / ステージ4：プロファイルモジュールの開発
+- 🧑‍💼 设计并实现了个人档案管理界面，支持档案列表和详情查看
+- 🧑‍💼 Designed and implemented profile management interface with list and detail views
+- 🧑‍💼 プロファイル管理インターフェースを設計・実装し、リストと詳細ビューをサポート
 
-- 完成了档案的创建、编辑和删除功能
-- Completed profile creation, editing and deletion functions
-- プロファイルの作成、編集、削除機能を完成
+- 📝 完成了档案的创建、编辑和删除功能
+- 📝 Completed profile creation, editing and deletion functions
+- 📝 プロファイルの作成、編集、削除機能を完成
 
-- 优化了IPC通信机制，提高了应用的稳定性和可靠性
-- Optimized IPC communication mechanism, improving application stability and reliability
-- IPCコミュニケーション機構を最適化し、アプリケーションの安定性と信頼性を向上
+- 🔍 实现了档案搜索和过滤功能
+- 🔍 Implemented profile search and filtering capabilities
+- 🔍 プロファイルの検索とフィルタリング機能を実装
 
-- 实现了错误处理和边界组件，提升了用户体验
-- Implemented error handling and boundary components for better user experience
-- エラー処理とバウンダリコンポーネントを実装し、ユーザーエクスペリエンスを向上
+- ⚡ 优化了IPC通信机制，提高了应用的稳定性和可靠性
+- ⚡ Optimized IPC communication mechanism, improving application stability and reliability
+- ⚡ IPCコミュニケーション機構を最適化し、アプリケーションの安定性と信頼性を向上
 
-- 开发进行中：档案搜索和筛选系统
-- In progress: Profile search and filtering system
-- 開発中：プロファイル検索とフィルタリングシステム
+### ✅ 阶段五：语录与经历管理功能实现 / Stage Five: Quotes and Experiences Management / ステージ5：引用と経験の管理機能実装
+- 💬 开发了语录管理界面，支持语录的增删改查和标签分类
+- 💬 Developed quotes management interface with CRUD operations and tag categorization
+- 💬 引用管理インターフェースを開発し、CRUD操作とタグ分類をサポート
+
+- 📅 设计实现了经历记录功能，包括时间轴视图和列表视图
+- 📅 Designed and implemented experience recording with timeline and list views
+- 📅 タイムラインとリストビューを含む経験記録機能を設計・実装
+
+- 🔄 建立了语录和经历与个人档案的关联机制
+- 🔄 Established association mechanisms between quotes/experiences and profiles
+- 🔄 引用/経験とプロファイル間の関連メカニズムを確立
+
+- 🌐 为所有新组件添加了多语言支持
+- 🌐 Added multilingual support for all new components
+- 🌐 すべての新コンポーネントに多言語サポートを追加
+
+- ✨ 实现了列表项和模态框的动画效果，提升用户体验
+- ✨ Implemented animations for list items and modals, enhancing user experience
+- ✨ リストアイテムとモーダルのアニメーションを実装し、ユーザー体験を向上
+
+### ✅ 阶段六：可视化组件与六边形模型实现 / Stage Six: Visualization Components and Hexagon Model / ステージ6：可視化コンポーネントと六角形モデルの実装
+- 📊 使用Recharts开发六边形人性模型雷达图
+- 📊 Developed hexagon personality model radar chart using Recharts
+- 📊 Rechartsを使用して六角形パーソナリティモデルのレーダーチャートを開発
+
+- 🎯 实现六维度评分系统和交互式图表
+- 🎯 Implemented six-dimension scoring system and interactive charts
+- 🎯 六次元スコアリングシステムとインタラクティブチャートを実装
+
+- 🎨 开发适配浅色/深色模式的图表主题
+- 🎨 Developed chart themes compatible with light/dark modes
+- 🎨 ライト/ダークモードに対応するチャートテーマを開発
+
+- 🧩 将图表组件拆分成更小的可复用组件，提高代码可维护性
+- 🧩 Split chart components into smaller reusable components, improving code maintainability
+- 🧩 チャートコンポーネントをより小さな再利用可能なコンポーネントに分割し、コードの保守性を向上
+
+- 🔄 增加图表交互功能，如缩放、刷新、下载和历史记录查看
+- 🔄 Added chart interaction features such as zoom, refresh, download, and history viewing
+- 🔄 ズーム、更新、ダウンロード、履歴表示などのチャート操作機能を追加
+
+- 🌐 为所有新增组件添加多语言支持
+- 🌐 Added multilingual support for all new components
+- 🌐 すべての新コンポーネントに多言語サポートを追加
 
 ## 📄 许可 / License / ライセンス
 

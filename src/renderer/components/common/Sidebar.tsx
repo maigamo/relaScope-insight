@@ -117,23 +117,23 @@ const Sidebar: React.FC = () => {
   
   // 分组1: 主要功能
   const mainItems = [
-    { id: 'dashboard', icon: faHome, label: t('nav.dashboard'), to: '/dashboard' },
-    { id: 'profiles', icon: faUser, label: t('nav.profiles'), to: '/profiles' },
-    { id: 'quotes', icon: faCommentDots, label: t('nav.quotes'), to: '/quotes' },
-    { id: 'experiences', icon: faHistory, label: t('nav.experiences'), to: '/experiences' }
+    { id: 'dashboard', icon: faHome, label: t('navigation.dashboard'), to: '/dashboard' },
+    { id: 'profiles', icon: faUser, label: t('navigation.profiles'), to: '/profiles' },
+    { id: 'quotes', icon: faCommentDots, label: t('navigation.quotes'), to: '/quotes' },
+    { id: 'experiences', icon: faHistory, label: t('navigation.experiences'), to: '/experiences' }
   ];
 
   // 分组2: 分析和可视化
   const analysisItems = [
-    { id: 'analysis', icon: faChartPie, label: t('nav.analysis'), to: '/analysis' },
-    { id: 'hexagon', icon: faShapes, label: t('nav.hexagon'), to: '/hexagon' },
-    { id: 'insights', icon: faBrain, label: t('nav.insights'), to: '/insights' },
-    { id: 'network', icon: faProjectDiagram, label: t('nav.network'), to: '/network' }
+    { id: 'analysis', icon: faChartPie, label: t('navigation.analysis'), to: '/analysis' },
+    { id: 'hexagon', icon: faShapes, label: t('hexagonModel.title'), to: '/hexagon' },
+    { id: 'insights', icon: faBrain, label: t('navigation.insights'), to: '/insights' },
+    { id: 'network', icon: faProjectDiagram, label: t('navigation.network'), to: '/network' }
   ];
 
   // 底部项目: 设置和暗模式
   const bottomItems = [
-    { id: 'settings', icon: faCog, label: t('nav.settings'), to: '/settings' },
+    { id: 'settings', icon: faCog, label: t('navigation.settings'), to: '/settings' },
     { 
       id: 'theme', 
       icon: colorMode === 'light' ? faMoon : faSun, 

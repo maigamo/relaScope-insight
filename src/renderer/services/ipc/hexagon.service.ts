@@ -33,12 +33,37 @@ export const HexagonService = {
   },
   
   /**
+   * 获取所有六边形模型
+   */
+  async getAllHexagonModels(): Promise<HexagonModel[]> {
+    try {
+      return await ipcService.invoke<HexagonModel[]>(HEXAGON_CHANNELS.GET_ALL);
+    } catch (error) {
+      console.error('获取所有六边形模型失败:', error);
+      return [];
+    }
+  },
+  
+  /**
+   * 根据ID获取六边形模型
+   * @param id 模型ID
+   */
+  async getHexagonModelById(id: number): Promise<HexagonModel | null> {
+    try {
+      return await ipcService.invoke<HexagonModel | null>(HEXAGON_CHANNELS.GET_BY_ID, { id });
+    } catch (error) {
+      console.error(`获取六边形模型(ID=${id})失败:`, error);
+      return null;
+    }
+  },
+  
+  /**
    * 根据档案ID获取六边形模型
    * @param profileId 档案ID
    */
   async getHexagonModelsByProfileId(profileId: number): Promise<HexagonModel[]> {
     try {
-      return await ipcService.invoke<HexagonModel[]>(HEXAGON_CHANNELS.GET_BY_PROFILE, profileId);
+      return await ipcService.invoke<HexagonModel[]>(HEXAGON_CHANNELS.GET_BY_PROFILE, { profileId });
     } catch (error) {
       console.error(`获取档案(ID=${profileId})的六边形模型失败:`, error);
       return [];
@@ -46,57 +71,15 @@ export const HexagonService = {
   },
   
   /**
-   * 获取档案的最新六边形模型
-   * @param profileId 档案ID
+   * 删除六边形模型
+   * @param id 模型ID
    */
-  async getLatestHexagonModel(profileId: number): Promise<HexagonModel | null> {
+  async deleteHexagonModel(id: number): Promise<boolean> {
     try {
-      return await ipcService.invoke<HexagonModel | null>(HEXAGON_CHANNELS.GET_LATEST, profileId);
+      return await ipcService.invoke<boolean>(HEXAGON_CHANNELS.DELETE, { id });
     } catch (error) {
-      console.error(`获取档案(ID=${profileId})的最新六边形模型失败:`, error);
-      return null;
-    }
-  },
-  
-  /**
-   * 获取最近的六边形模型
-   * @param limit 限制数量
-   */
-  async getRecentHexagonModels(limit: number = 10): Promise<HexagonModel[]> {
-    try {
-      return await ipcService.invoke<HexagonModel[]>(HEXAGON_CHANNELS.GET_RECENT, limit);
-    } catch (error) {
-      console.error('获取最近六边形模型失败:', error);
-      return [];
-    }
-  },
-  
-  /**
-   * 获取六边形维度的平均值
-   */
-  async getAverageHexagonDimensions(): Promise<{ [key: string]: number }> {
-    try {
-      return await ipcService.invoke<{ [key: string]: number }>(HEXAGON_CHANNELS.GET_AVERAGE);
-    } catch (error) {
-      console.error('获取六边形维度平均值失败:', error);
-      return {};
-    }
-  },
-  
-  /**
-   * 比较两个六边形模型
-   * @param id1 第一个模型ID
-   * @param id2 第二个模型ID
-   */
-  async compareHexagonModels(id1: number, id2: number): Promise<{ 
-    differences: { [key: string]: { value1: number; value2: number; difference: number } };
-    timeGap: number;
-  }> {
-    try {
-      return await ipcService.invoke(HEXAGON_CHANNELS.COMPARE, id1, id2);
-    } catch (error) {
-      console.error(`比较六边形模型(ID=${id1}, ID=${id2})失败:`, error);
-      throw error;
+      console.error(`删除六边形模型(ID=${id})失败:`, error);
+      return false;
     }
   }
 }; 
