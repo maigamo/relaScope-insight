@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Box, Flex, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import ProfileSidebar from './components/ProfileSidebar';
+import ProfileSidebar from '../../components/profiles/ProfileSidebar';
 import HexagonModelChart from './components/HexagonModelChart';
 import HexagonModelDetail from './components/HexagonModelDetail';
 import i18n from '../../i18n';

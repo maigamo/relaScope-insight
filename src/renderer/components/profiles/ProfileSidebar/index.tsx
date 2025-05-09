@@ -3,147 +3,28 @@ import {
   VStack, 
   Box, 
   Text, 
-  Avatar, 
   Spinner, 
   useColorModeValue, 
-  InputGroup, 
-  Input, 
-  InputLeftElement,
-  InputRightElement,
-  CloseButton,
-  Center,
   Button,
   Flex,
-  Badge
+  Center
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFilter, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { ipcService } from '../../../services/ipc';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { DB_CHANNELS } from '../../../services/ipc/channels';
 import i18n from '../../../i18n';
-
-interface Profile {
-  id: number;
-  name: string;
-  avatar?: string;
-  occupation?: string;
-  tags?: string;
-}
+import SearchBox from './SearchBox';
+import ProfileCard from './ProfileCard';
+import { Profile } from './types';
 
 interface ProfileSidebarProps {
   selectedProfileId: number | null;
   onSelect: (profileId: number) => void;
 }
-
-// 搜索框组件
-interface SearchBoxProps {
-  searchQuery: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClear: () => void;
-  onEnterPress: () => void;
-}
-
-const SearchBox: React.FC<SearchBoxProps> = React.memo(({ searchQuery, onChange, onClear, onEnterPress }) => {
-  const { t } = useTranslation();
-  const inputBg = useColorModeValue('white', 'gray.800');
-  const iconColor = useColorModeValue('gray.500', 'gray.400');
-  
-  // 添加回车键处理函数
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      onEnterPress();
-    }
-  };
-  
-  return (
-    <Box position="sticky" top={0} zIndex={10} bg={useColorModeValue('white', 'gray.800')} pt={2} pb={2}>
-      <InputGroup size="sm">
-        <InputLeftElement pointerEvents="none">
-          <SearchIcon color={iconColor} />
-        </InputLeftElement>
-        <Input
-          placeholder={t('common.search')}
-          value={searchQuery}
-          onChange={onChange}
-          onKeyDown={handleKeyDown}
-          bg={inputBg}
-          borderRadius="md"
-        />
-        {searchQuery && (
-          <InputRightElement>
-            <CloseButton size="sm" onClick={onClear} />
-          </InputRightElement>
-        )}
-      </InputGroup>
-    </Box>
-  );
-});
-
-// 档案卡片动画
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-const ProfileCard: React.FC<{
-  profile: Profile;
-  isSelected: boolean;
-  onClick: () => void;
-}> = React.memo(({ profile, isSelected, onClick }) => {
-  const { t } = useTranslation();
-  const borderColor = useColorModeValue('green.400', 'green.200');
-  const selectedBg = useColorModeValue('green.50', 'green.900');
-  const hoverBg = useColorModeValue('gray.50', 'gray.700');
-  
-  return (
-    <Box
-      as={motion.div}
-      variants={cardVariants}
-      p={3}
-      mb={2}
-      borderRadius="md"
-      borderLeft={isSelected ? `4px solid ${borderColor}` : '4px solid transparent'}
-      bg={isSelected ? selectedBg : 'transparent'}
-      cursor="pointer"
-      onClick={onClick}
-      _hover={{ bg: !isSelected ? hoverBg : selectedBg }}
-      transition="all 0.2s"
-    >
-      <Flex align="center">
-        {profile.avatar ? (
-          <Avatar size="sm" name={profile.name} src={profile.avatar} mr={3} />
-        ) : (
-          <Center w="32px" h="32px" mr={3} borderRadius="full" bg="gray.200">
-            <FontAwesomeIcon icon={faUser} />
-          </Center>
-        )}
-        <Box>
-          <Text fontWeight={isSelected ? "bold" : "normal"} fontSize="sm" noOfLines={1}>
-            {profile.name}
-          </Text>
-          {profile.occupation && (
-            <Text fontSize="xs" color="gray.500" noOfLines={1}>
-              {profile.occupation}
-            </Text>
-          )}
-          {profile.tags && (
-            <Flex mt={1} flexWrap="wrap" gap={1}>
-              {profile.tags.split(',').slice(0, 2).map((tag, idx) => (
-                <Badge key={idx} size="sm" colorScheme="green" fontSize="2xs">
-                  {tag.trim()}
-                </Badge>
-              ))}
-            </Flex>
-          )}
-        </Box>
-      </Flex>
-    </Box>
-  );
-});
 
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSelect }) => {
   const { t } = useTranslation();
@@ -260,13 +141,13 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ selectedProfileId, onSe
   }, [searchQuery, debouncedSearch]);
 
   // 加载更多
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (hasMore && !loadingMore) {
       const nextPage = page + 1;
       setPage(nextPage);
       fetchProfiles(nextPage, searchQuery, true);
     }
-  };
+  }, [hasMore, loadingMore, page, searchQuery]);
 
   // 滚动到底部自动加载更多
   const handleScroll = useCallback(() => {

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Box, Flex, useDisclosure, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import ProfileSidebar from './components/ProfileSidebar';
+import ProfileSidebar from '../../components/profiles/ProfileSidebar';
 import QuotesList from './components/QuotesList';
 import QuoteForm from './components/QuoteForm';
 import QuoteDetailModal from './components/QuoteDetailModal';

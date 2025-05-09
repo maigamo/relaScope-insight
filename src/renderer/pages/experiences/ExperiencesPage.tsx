@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Box, Flex, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import ProfileSidebar from './components/ProfileSidebar';
+import ProfileSidebar from '../../components/profiles/ProfileSidebar';
 import ExperiencesList, { ExperiencesListRef } from './components/ExperienceList';
 import ExperienceForm from './components/ExperienceForm';
 import ExperienceDetailModal from './components/ExperienceDetailModal';

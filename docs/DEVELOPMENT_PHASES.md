@@ -697,6 +697,7 @@
 5. 实现 API 调用基础设施（包括重试、超时等）
 6. 开发 Prompt 模板管理系统
 7. 实现 Token 计数和预算控制功能
+8. 基于LangChain.js实现LLM服务抽象层
 
 **目标：**
 - 完成 LLM 服务配置和管理功能
@@ -704,6 +705,7 @@
 - 服务连接测试功能可用
 - Prompt 模板系统可以正常工作
 - API 调用具备错误处理和重试机制
+- 实现基于LangChain.js的统一LLM服务接口
 
 **额外目标：**
 - 鼠标移入、点击元素比如模块、按钮，图标、链接等时，要设计动画效果，提升用户体验。
@@ -713,6 +715,7 @@
 
 **技术要点与依赖兼容性：**
 - 使用 Axios 1.6.7 实现 LLM API 调用，确保支持现代 Promise API
+- 集成 LangChain.js 0.0.177 作为LLM服务集成框架，实现统一抽象层
 - 利用 Node.js crypto 模块实现 API 密钥的安全存储
 - 网络请求超时设置为 60 秒（可配置），符合大多数 LLM 服务响应时间
 - 实现指数退避重试策略，避免请求失败后立即重试
@@ -724,6 +727,170 @@
 - API 密钥必须使用 `security-config.json` 中的加密配置进行存储
 - 实现 `llm-config.json` 中定义的重试机制，最大重试次数默认为3
 
+**LangChain.js实现细节：**
+
+1. **LLM服务抽象与统一接口**
+   - 利用LangChain的模型抽象，支持多种LLM提供商(OpenAI, Anthropic, Gemini等)
+   - 实现模型切换策略，允许根据配置或性能需求动态切换服务提供商
+   - 创建服务适配层，屏蔽不同LLM服务的API差异
+   ```typescript
+   // 模型服务抽象示例
+   import { ChatOpenAI } from "langchain/chat_models/openai";
+   import { ChatAnthropic } from "langchain/chat_models/anthropic";
+   import { ChatGoogleGenerativeAI } from "langchain/chat_models/googleai";
+   
+   export class LLMServiceFactory {
+     static createModel(provider: string, config: LLMConfig) {
+       switch(provider) {
+         case 'openai':
+           return new ChatOpenAI({ 
+             modelName: config.model, 
+             temperature: config.temperature,
+             apiKey: config.apiKey,
+             maxTokens: config.maxTokens
+           });
+         case 'anthropic':
+           return new ChatAnthropic({
+             modelName: config.model,
+             temperature: config.temperature,
+             apiKey: config.apiKey
+           });
+         case 'google':
+           return new ChatGoogleGenerativeAI({
+             modelName: config.model,
+             apiKey: config.apiKey
+           });
+         default:
+           throw new Error(`不支持的LLM提供商: ${provider}`);
+       }
+     }
+   }
+   ```
+
+2. **Prompt模板管理系统**
+   - 利用LangChain的PromptTemplate系统实现模板管理
+   - 开发模板编辑器UI，支持变量插入和格式预览
+   - 实现模板版本控制和历史记录
+   ```typescript
+   // Prompt模板管理示例
+   import { PromptTemplate } from "langchain/prompts";
+   
+   export class PromptManager {
+     async loadTemplateFromDB(templateId: string): Promise<PromptTemplate> {
+       const templateData = await db.getPromptTemplate(templateId);
+       return new PromptTemplate({
+         template: templateData.content,
+         inputVariables: templateData.variables
+       });
+     }
+     
+     async renderTemplate(templateId: string, variables: Record<string, any>): Promise<string> {
+       const template = await this.loadTemplateFromDB(templateId);
+       return template.format(variables);
+     }
+     
+     async saveTemplate(template: {id?: string, name: string, content: string, variables: string[]}): Promise<string> {
+       // 验证模板格式
+       try {
+         new PromptTemplate({
+           template: template.content,
+           inputVariables: template.variables
+         });
+         // 保存到数据库
+         return await db.savePromptTemplate(template);
+       } catch (error) {
+         throw new Error(`模板格式无效: ${error.message}`);
+       }
+     }
+   }
+   ```
+
+3. **API密钥管理与安全存储**
+   - 使用Node.js crypto模块加密API密钥
+   - 实现密钥验证机制，确保密钥格式正确
+   - 为不同服务提供商定制不同的密钥验证逻辑
+   ```typescript
+   // API密钥验证示例
+   export class APIKeyValidator {
+     static async validateOpenAIKey(apiKey: string): Promise<boolean> {
+       try {
+         const openai = new ChatOpenAI({ apiKey });
+         // 发送最小测试请求验证密钥
+         await openai.call([{role: "user", content: "测试"}]);
+         return true;
+       } catch (error) {
+         return false;
+       }
+     }
+     
+     static async validateAnthropicKey(apiKey: string): Promise<boolean> {
+       // Anthropic密钥验证逻辑
+       // ...
+     }
+   }
+   ```
+
+4. **Token计数与预算控制**
+   - 利用LangChain内置的分词工具实现精确计数
+   - 开发预算控制面板，设置用量限制
+   - 实现请求前Token估算，防止超出限制
+   ```typescript
+   // Token计数示例
+   import { encodingForModel } from "langchain/utils/tiktoken";
+   
+   export class TokenCounter {
+     static async countTokens(text: string, model: string): Promise<number> {
+       const encoding = await encodingForModel(model);
+       return encoding.encode(text).length;
+     }
+     
+     static async estimateRequestCost(prompt: string, model: string): Promise<number> {
+       const tokens = await this.countTokens(prompt, model);
+       // 根据模型不同计算成本估算
+       const costPerToken = MODEL_COSTS[model] || 0.002 / 1000;
+       return tokens * costPerToken;
+     }
+   }
+   ```
+
+5. **请求重试与错误处理**
+   - 实现基于LangChain中间件的自定义重试逻辑
+   - 利用指数退避策略处理限流和临时错误
+   - 实现详细的错误分类和日志记录
+   ```typescript
+   // 重试逻辑示例
+   import { LLMChain } from "langchain/chains";
+   
+   export class RetryHandler {
+     static async withRetry<T>(
+       operation: () => Promise<T>, 
+       maxRetries: number = 3, 
+       initialDelay: number = 1000
+     ): Promise<T> {
+       let attempt = 0;
+       while (true) {
+         try {
+           return await operation();
+         } catch (error) {
+           attempt++;
+           if (attempt >= maxRetries || !this.isRetryableError(error)) {
+             throw error;
+           }
+           
+           const delay = initialDelay * Math.pow(2, attempt - 1);
+           console.log(`尝试 ${attempt}/${maxRetries} 失败，${delay}ms后重试...`);
+           await new Promise(resolve => setTimeout(resolve, delay));
+         }
+       }
+     }
+     
+     static isRetryableError(error: any): boolean {
+       // 判断是否是可重试的错误类型
+       return error.status === 429 || error.status >= 500 || error.message.includes('timeout');
+     }
+   }
+   ```
+
 ### 阶段八：分析功能实现
 
 **开发任务：**
@@ -734,6 +901,7 @@
 5. 实现分析历史记录展示和查询
 6. 开发手动分析模式功能
 7. 实现结果格式化和渲染
+8. 基于LangChain.js实现分析引擎核心
 
 **目标：**
 - 完成所有分析类型的实现
@@ -741,6 +909,7 @@
 - 分析结果能够正确存储和展示
 - 历史记录管理功能正常
 - 手动模式可以正常使用
+- 实现基于LangChain.js的分析链和解析器
 
 **额外目标：**
 - 鼠标移入、点击元素比如模块、按钮，图标、链接等时，要设计动画效果，提升用户体验。
@@ -749,6 +918,7 @@
 - 确保本阶段完成后，程序能够正常运行且不出现明显的错误或异常。
 
 **技术要点与依赖兼容性：**
+- 使用LangChain.js 0.0.177实现分析流程的链式处理和结构化输出
 - 分析功能依赖 LLM 服务、数据库和可视化服务，确保三者正确集成
 - 分析过程应在后台线程中执行，避免阻塞 UI 线程
 - 结果渲染使用 Marked 11.2.0
@@ -760,6 +930,297 @@
 - 根据 `analysis-config.json` 中定义的分析类型和提示模板实现分析功能
 - 六边形模型分析需支持 JSON 输出格式（取决于 hexagonModelJSONEnabled 配置）
 - 实现自动分析功能，根据 autoAnalysisEnabled 和 autoAnalysisThreshold 配置触发
+
+**LangChain.js分析引擎实现细节：**
+
+1. **六边形人性模型分析链**
+   - 利用LangChain的Chain抽象实现完整分析流程
+   - 使用结构化输出解析器确保返回标准化JSON格式
+   - 实现多轮分析策略，提升结果准确性
+   ```typescript
+   // 六边形模型分析链实现示例
+   import { StructuredOutputParser } from "langchain/output_parsers";
+   import { ChatOpenAI } from "langchain/chat_models/openai";
+   import { PromptTemplate } from "langchain/prompts";
+   import { RunnableSequence } from "langchain/schema/runnable";
+   import { z } from "zod";
+   
+   // 六边形模型输出格式定义
+   const hexagonModelSchema = z.object({
+     security: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     achievement: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     freedom: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     belonging: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     novelty: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     control: z.object({
+       score: z.number().min(0).max(10),
+       analysis: z.string(),
+       evidence: z.array(z.string())
+     }),
+     overallAnalysis: z.string()
+   });
+   
+   export class HexagonModelAnalyzer {
+     async analyze(
+       profile: ProfileData, 
+       quotes: QuoteData[], 
+       experiences: ExperienceData[]
+     ) {
+       // 1. 创建结构化输出解析器
+       const outputParser = StructuredOutputParser.fromZodSchema(hexagonModelSchema);
+       
+       // 2. 加载分析提示模板
+       const promptTemplate = await promptManager.getHexagonModelTemplate();
+       
+       // 3. 创建LLM实例
+       const llm = await llmFactory.createModel('openai', {
+         model: 'gpt-4-turbo',
+         temperature: 0.2
+       });
+       
+       // 4. 构建分析链
+       const chain = RunnableSequence.from([
+         {
+           profile: (input) => JSON.stringify(input.profile),
+           quotes: (input) => JSON.stringify(input.quotes),
+           experiences: (input) => JSON.stringify(input.experiences),
+           format_instructions: () => outputParser.getFormatInstructions()
+         },
+         promptTemplate,
+         llm,
+         outputParser
+       ]);
+       
+       // 5. 执行分析
+       try {
+         const result = await chain.invoke({
+           profile,
+           quotes,
+           experiences
+         });
+         
+         // 保存分析结果
+         await this.saveAnalysisResult(profile.id, result);
+         
+         return result;
+       } catch (error) {
+         console.error('六边形模型分析失败:', error);
+         throw new Error(`分析失败: ${error.message}`);
+       }
+     }
+     
+     async generateCopyablePrompt(
+       profile: ProfileData, 
+       quotes: QuoteData[], 
+       experiences: ExperienceData[]
+     ): Promise<string> {
+       // 生成可复制的提示文本，供手动分析使用
+       const promptTemplate = await promptManager.getHexagonModelTemplate();
+       return promptTemplate.format({
+         profile: JSON.stringify(profile),
+         quotes: JSON.stringify(quotes),
+         experiences: JSON.stringify(experiences),
+         format_instructions: "请以JSON格式返回分析结果，包含六边形模型的六个维度评分及分析。"
+       });
+     }
+   }
+   ```
+
+2. **分析链式处理与优化**
+   - 使用LangChain的Sequential Chain处理复杂分析任务
+   - 实现多步骤分析，先提取关键点再进行综合评分
+   - 利用中间结果缓存优化处理效率
+   ```typescript
+   // 多步骤分析链示例
+   import { LLMChain } from "langchain/chains";
+   import { SequentialChain } from "langchain/chains";
+   
+   export class AdvancedAnalysisChain {
+     async createMultiStepAnalysis() {
+       // 1. 提取语录关键点的Chain
+       const extractChain = new LLMChain({
+         llm,
+         prompt: promptTemplates.extract,
+         outputKey: "extractedPoints"
+       });
+       
+       // 2. 提取经历关键点的Chain
+       const experienceChain = new LLMChain({
+         llm,
+         prompt: promptTemplates.experience,
+         outputKey: "experiencePoints"
+       });
+       
+       // 3. 综合分析评分的Chain
+       const scoringChain = new LLMChain({
+         llm,
+         prompt: promptTemplates.scoring,
+         outputKey: "modelScores"
+       });
+       
+       // 4. 生成详细分析报告的Chain
+       const reportChain = new LLMChain({
+         llm,
+         prompt: promptTemplates.report,
+         outputKey: "finalReport"
+       });
+       
+       // 构建完整的顺序Chain
+       const overallChain = new SequentialChain({
+         chains: [extractChain, experienceChain, scoringChain, reportChain],
+         inputVariables: ["profile", "quotes", "experiences"],
+         outputVariables: ["extractedPoints", "experiencePoints", "modelScores", "finalReport"]
+       });
+       
+       return overallChain;
+     }
+   }
+   ```
+
+3. **结构化输出解析与验证**
+   - 使用LangChain的输出解析器确保结果格式一致
+   - 实现结果验证和纠正机制，提高输出质量
+   - 支持输出修复，处理格式不符合预期的情况
+   ```typescript
+   // 结构化输出解析与修复示例
+   import { OutputFixingParser } from "langchain/output_parsers";
+   
+   export class RobustOutputParser {
+     async createParser() {
+       // 创建基础解析器
+       const baseParser = StructuredOutputParser.fromZodSchema(hexagonModelSchema);
+       
+       // 创建带自动修复功能的解析器
+       const robustParser = OutputFixingParser.fromLLM(
+         new ChatOpenAI({ temperature: 0 }), // 低温度模型用于修复
+         baseParser
+       );
+       
+       return robustParser;
+     }
+     
+     async safeParseResult(text: string) {
+       const parser = await this.createParser();
+       try {
+         // 尝试解析输出
+         return await parser.parse(text);
+       } catch (error) {
+         console.error("解析输出失败，尝试修复:", error);
+         // 记录原始输出以便调试
+         await logService.logParsingError(text, error);
+         // 返回默认结果或抛出错误
+         throw new Error(`无法解析分析结果: ${error.message}`);
+       }
+     }
+   }
+   ```
+
+4. **手动分析模式实现**
+   - 创建用户友好的提示模板生成器
+   - 实现分析结果手动粘贴和解析功能
+   - 开发复制提示到剪贴板功能，方便用户操作
+   ```typescript
+   // 手动分析模式界面服务
+   export class ManualAnalysisService {
+     // 生成可复制的提示
+     async generatePromptText(profileId: string): Promise<string> {
+       // 获取数据
+       const profile = await profileService.getById(profileId);
+       const quotes = await quoteService.getByProfileId(profileId);
+       const experiences = await experienceService.getByProfileId(profileId);
+       
+       // 使用LangChain模板生成
+       const analyzer = new HexagonModelAnalyzer();
+       return analyzer.generateCopyablePrompt(profile, quotes, experiences);
+     }
+     
+     // 解析用户粘贴的结果
+     async parseManualResult(profileId: string, resultText: string): Promise<HexagonModel> {
+       const parser = new RobustOutputParser();
+       try {
+         const parsedResult = await parser.safeParseResult(resultText);
+         
+         // 存储解析结果
+         await analysisRepository.saveAnalysis({
+           profileId,
+           type: 'hexagon-model',
+           data: parsedResult,
+           source: 'manual',
+           createdAt: new Date()
+         });
+         
+         return parsedResult;
+       } catch (error) {
+         throw new Error(`无法解析手动分析结果: ${error.message}`);
+       }
+     }
+   }
+   ```
+
+5. **分析状态管理与UI反馈**
+   - 实现基于React Context的分析状态管理
+   - 开发流式响应展示，提供实时反馈
+   - 使用LangChain的事件回调系统展示进度
+   ```typescript
+   // 分析状态管理与进度反馈
+   import { CallbackManager } from "langchain/callbacks";
+   
+   export class AnalysisStateManager {
+     // 创建带进度回调的分析链
+     createChainWithCallbacks(onProgress: (step: string, progress: number) => void) {
+       const callbacks = CallbackManager.fromHandlers({
+         handleLLMStart: (llm) => {
+           onProgress("正在启动分析...", 0.1);
+         },
+         handleLLMEnd: () => {
+           onProgress("分析计算完成", 0.6);
+         },
+         handleChainStart: (chain) => {
+           onProgress(`正在执行${chain.name}...`, 0.3);
+         },
+         handleChainEnd: () => {
+           onProgress("分析链执行完成", 0.8);
+         },
+         handleToolStart: (tool) => {
+           onProgress(`正在使用${tool.name}...`, 0.4);
+         },
+         handleToolEnd: () => {
+           onProgress("工具使用完成", 0.5);
+         },
+         handleText: (text) => {
+           console.log("生成文本:", text);
+         }
+       });
+       
+       // 返回带回调的LLM和Chain对象...
+     }
+     
+     // 实现分析任务监控
+     async monitorAnalysisTask(taskId: string): Promise<AnalysisStatus> {
+       // 检查任务状态，返回进度信息...
+     }
+   }
+   ```
 
 ### 阶段九：数据导出与备份功能实现
 
