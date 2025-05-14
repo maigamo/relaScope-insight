@@ -8,7 +8,13 @@ import {
   ipcService, 
   ConfigService as IpcConfigService,
   AppService as IpcAppService, 
-  DatabaseService as IpcDatabaseService 
+  DatabaseService as IpcDatabaseService,
+  ProfileService as IpcProfileService,
+  QuoteService as IpcQuoteService,
+  ExperienceService as IpcExperienceService,
+  AnalysisService as IpcAnalysisService,
+  HexagonService as IpcHexagonService,
+  LLMService as IpcLLMService
 } from './ipc';
 
 // 导入原始类型定义
@@ -34,3 +40,9 @@ export { ipcService };
 export const ConfigService = IpcConfigService;
 export const AppService = IpcAppService;
 export const DatabaseService = IpcDatabaseService;
+export const ProfileService = IpcProfileService;
+export const QuoteService = IpcQuoteService;
+export const ExperienceService = IpcExperienceService;
+export const AnalysisService = IpcAnalysisService;
+export const HexagonService = IpcHexagonService;
+export const LLMService = IpcLLMService;

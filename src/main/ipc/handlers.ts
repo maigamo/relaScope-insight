@@ -8,6 +8,8 @@ import {
 import { configService } from '../services/config';
 import { DatabaseService } from '../services/database/DatabaseService';
 import { DatabaseIpcHandler } from '../services/database/DatabaseIpcHandler';
+import { setupDatabaseHandlers as setupDbHandlers } from './database.handlers';
+import { setupLLMHandlers } from './llm.handlers';
 
 /**
  * 配置IPC通信处理器
@@ -96,7 +98,8 @@ export function setupIPCHandlers() {
 
   // 数据库相关处理器
   // 使用全新的DatabaseIpcHandler替代旧的处理方式
-  setupDatabaseHandlers();
+  setupDbHandlers();
+  setupLLMHandlers();
 }
 
 /**

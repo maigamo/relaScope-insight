@@ -1,22 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Heading,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  SimpleGrid,
-  FormControl,
-  FormLabel,
-  Switch,
-  Select,
   useColorMode,
-  Card,
-  CardBody,
+  Flex,
   Icon,
-  Text
+  Text,
+  useColorModeValue,
+  VStack
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,8 +20,7 @@ import {
   faRobot
 } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
-import { AppContext } from '../../contexts/AppContext';
-import { ConfigService } from '../../services/ipc.service';
+import LLMSettings from '../../components/settings/llm';
 
 // 动画配置
 const container = {
@@ -43,29 +33,77 @@ const container = {
   }
 };
 
-const item = {
+const itemAnim = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 }
 };
 
+// 导航项类型
+interface NavItem {
+  id: string;
+  icon: any;
+  label: string;
+  component: React.ReactNode;
+}
+
+// 占位组件
+const UnderDevelopment: React.FC<{title: string}> = ({title}) => (
+  <Box p={4} borderRadius="md" bg="gray.50" _dark={{ bg: "gray.700" }}>
+    <Text fontSize="md">{title} - 功能正在开发中</Text>
+  </Box>
+);
+
 // 设置页面组件
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { colorMode, toggleColorMode } = useColorMode();
-  const { language, setLanguage } = useContext(AppContext);
+  const [activeNavItem, setActiveNavItem] = useState<string>('llm');
 
-  // 处理语言变更
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLanguage = e.target.value;
-    setLanguage(newLanguage);
-    ConfigService.setConfig('app.language', newLanguage);
-  };
+  // 导航项数据
+  const navItems: NavItem[] = [
+    {
+      id: 'appearance',
+      icon: faPalette,
+      label: t('settings.appearance'),
+      component: <UnderDevelopment title={t('settings.appearance')} />
+    },
+    {
+      id: 'language',
+      icon: faGlobe,
+      label: t('settings.language'),
+      component: <UnderDevelopment title={t('settings.language')} />
+    },
+    {
+      id: 'notifications',
+      icon: faBell,
+      label: t('settings.notifications'),
+      component: <UnderDevelopment title={t('settings.notifications')} />
+    },
+    {
+      id: 'database',
+      icon: faDatabase,
+      label: t('settings.database'),
+      component: <UnderDevelopment title={t('settings.database')} />
+    },
+    {
+      id: 'llm',
+      icon: faRobot,
+      label: t('settings.llm'),
+      component: <LLMSettings />
+    },
+    {
+      id: 'privacy',
+      icon: faShield,
+      label: t('settings.privacy'),
+      component: <UnderDevelopment title={t('settings.privacy')} />
+    }
+  ];
 
-  // 处理主题模式变更
-  const handleColorModeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    toggleColorMode();
-    ConfigService.setConfig('ui.darkMode', e.target.checked);
-  };
+  // 样式变量
+  const sidebarBg = useColorModeValue('gray.50', 'gray.900');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const activeItemBg = useColorModeValue('blue.50', 'blue.900');
+  const activeItemColor = useColorModeValue('blue.600', 'blue.200');
+  const hoverBg = useColorModeValue('gray.100', 'gray.700');
 
   return (
     <Box
@@ -73,138 +111,67 @@ const SettingsPage: React.FC = () => {
       variants={container}
       initial="hidden"
       animate="show"
+      h="calc(100vh - 80px)" // 减去顶部导航栏的高度
+      overflow="hidden"
     >
       <Heading as="h1" size="lg" mb={6}>
         {t('navigation.settings')}
       </Heading>
 
-      <Tabs variant="enclosed" colorScheme="brand" isLazy>
-        <TabList>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faPalette} mr={2} />
-            {t('settings.appearance')}
-          </Tab>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faGlobe} mr={2} />
-            {t('settings.language')}
-          </Tab>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faBell} mr={2} />
-            {t('settings.notifications')}
-          </Tab>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faDatabase} mr={2} />
-            {t('settings.database')}
-          </Tab>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faRobot} mr={2} />
-            {t('settings.llm')}
-          </Tab>
-          <Tab>
-            <Icon as={FontAwesomeIcon} icon={faShield} mr={2} />
-            {t('settings.privacy')}
-          </Tab>
-        </TabList>
-
-        <TabPanels>
-          {/* 外观设置 */}
-          <TabPanel>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-              <Card as={motion.div} variants={item}>
-                <CardBody>
-                  <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor="dark-mode" mb="0">
-                      {t('settings.darkMode')}
-                    </FormLabel>
-                    <Switch
-                      id="dark-mode"
-                      isChecked={colorMode === 'dark'}
-                      onChange={handleColorModeChange}
-                      colorScheme="brand"
-                    />
-                  </FormControl>
-                </CardBody>
-              </Card>
-
-              <Card as={motion.div} variants={item}>
-                <CardBody>
-                  <Text>
-                    {t('settings.appearance')} - 更多设置还在开发中
-                  </Text>
-                </CardBody>
-              </Card>
-            </SimpleGrid>
-          </TabPanel>
-
-          {/* 语言设置 */}
-          <TabPanel>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-              <Card as={motion.div} variants={item}>
-                <CardBody>
-                  <FormControl>
-                    <FormLabel htmlFor="language">
-                      {t('settings.language')}
-                    </FormLabel>
-                    <Select
-                      id="language"
-                      value={language}
-                      onChange={handleLanguageChange}
-                    >
-                      <option value="zh">中文</option>
-                      <option value="en">English</option>
-                      <option value="ja">日本語</option>
-                    </Select>
-                  </FormControl>
-                </CardBody>
-              </Card>
-            </SimpleGrid>
-          </TabPanel>
-
-          {/* 通知设置 */}
-          <TabPanel>
-            <Card as={motion.div} variants={item}>
-              <CardBody>
-                <Text>
-                  {t('settings.notifications')} - 更多设置还在开发中
+      <Flex h="calc(100% - 40px)">
+        {/* 左侧导航栏 */}
+        <Box
+          as="nav"
+          w="220px"
+          bg={sidebarBg}
+          borderRight="1px"
+          borderColor={borderColor}
+          h="100%"
+          overflowY="auto"
+          py={4}
+        >
+          <VStack spacing={1} align="stretch">
+            {navItems.map((item) => (
+              <Box
+                key={item.id}
+                py={3}
+                px={4}
+                cursor="pointer"
+                borderLeft="3px solid"
+                borderLeftColor={activeNavItem === item.id ? activeItemColor : 'transparent'}
+                bg={activeNavItem === item.id ? activeItemBg : 'transparent'}
+                color={activeNavItem === item.id ? activeItemColor : 'inherit'}
+                _hover={{ bg: activeNavItem !== item.id ? hoverBg : undefined }}
+                transition="all 0.2s"
+                onClick={() => setActiveNavItem(item.id)}
+                display="flex"
+                alignItems="center"
+              >
+                <Icon as={FontAwesomeIcon} icon={item.icon} mr={3} />
+                <Text fontWeight={activeNavItem === item.id ? "medium" : "normal"}>
+                  {item.label}
                 </Text>
-              </CardBody>
-            </Card>
-          </TabPanel>
+              </Box>
+            ))}
+          </VStack>
+        </Box>
 
-          {/* 数据库设置 */}
-          <TabPanel>
-            <Card as={motion.div} variants={item}>
-              <CardBody>
-                <Text>
-                  {t('settings.database')} - 更多设置还在开发中
-                </Text>
-              </CardBody>
-            </Card>
-          </TabPanel>
-
-          {/* LLM设置 */}
-          <TabPanel>
-            <Card as={motion.div} variants={item}>
-              <CardBody>
-                <Text>
-                  {t('settings.llm')} - 更多设置还在开发中
-                </Text>
-              </CardBody>
-            </Card>
-          </TabPanel>
-
-          {/* 隐私设置 */}
-          <TabPanel>
-            <Card as={motion.div} variants={item}>
-              <CardBody>
-                <Text>
-                  {t('settings.privacy')} - 更多设置还在开发中
-                </Text>
-              </CardBody>
-            </Card>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+        {/* 右侧内容区 */}
+        <Box flex="1" p={6} overflowY="auto" position="relative">
+          {navItems.map((item) => (
+            <Box
+              key={item.id}
+              display={activeNavItem === item.id ? 'block' : 'none'}
+              w="100%"
+              h="100%"
+              as={motion.div}
+              variants={itemAnim}
+            >
+              {item.component}
+            </Box>
+          ))}
+        </Box>
+      </Flex>
     </Box>
   );
 };

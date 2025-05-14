@@ -82,6 +82,39 @@ export const IPC_CHANNELS = {
     GET_BY_PROFILE: 'analysis:getByProfile',
     GET_RECENT: 'analysis:getRecent',
     GET_STATS: 'analysis:getStats'
+  },
+  
+  // LLM服务相关通道
+  LLM: {
+    // 配置管理
+    GET_ALL_CONFIGS: 'llm:getAllConfigs',
+    GET_CONFIG: 'llm:getConfig',
+    SAVE_CONFIG: 'llm:saveConfig',
+    DELETE_CONFIG: 'llm:deleteConfig',
+    SET_DEFAULT_CONFIG: 'llm:setDefaultConfig',
+    
+    // API调用
+    QUERY: 'llm:query',
+    QUERY_WITH_TEMPLATE: 'llm:queryWithTemplate',
+    
+    // 提示词模板管理
+    GET_ALL_TEMPLATES: 'llm:getAllTemplates',
+    GET_TEMPLATE: 'llm:getTemplate',
+    SAVE_TEMPLATE: 'llm:saveTemplate',
+    DELETE_TEMPLATE: 'llm:deleteTemplate',
+    
+    // 特定分析功能
+    ANALYZE_HEXAGON_PERSONALITY: 'llm:analyzeHexagonPersonality',
+    
+    // API密钥管理
+    TEST_API_KEY: 'llm:testApiKey',
+    SET_API_KEY: 'llm:setApiKey',
+    GET_API_KEY: 'llm:getApiKey',
+    CLEAR_API_KEY: 'llm:clearApiKey',
+    
+    // 模型管理
+    GET_AVAILABLE_MODELS: 'llm:getAvailableModels',
+    SET_ACTIVE_MODEL: 'llm:setActiveModel'
   }
 };
 
@@ -90,6 +123,7 @@ export const DB_CHANNELS = IPC_CHANNELS.DB;
 export const APP_CHANNELS = IPC_CHANNELS.APP;
 export const CONFIG_CHANNELS = IPC_CHANNELS.CONFIG;
 export const ANALYSIS_CHANNELS = IPC_CHANNELS.ANALYSIS;
+export const LLM_CHANNELS = IPC_CHANNELS.LLM;
 
 // 具体领域的通道
 export const PROFILE_CHANNELS = IPC_CHANNELS.DB.PROFILE;

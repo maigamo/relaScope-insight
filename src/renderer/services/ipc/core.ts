@@ -60,6 +60,8 @@ class IpcService {
         throw new Error('electronAPI未定义');
       }
       
+      console.log(`发送IPC请求 [${channel}]:`, args);
+      
       // 获取原始响应
       let originalResponse = await window.electronAPI.invoke<T>(channel, args.length === 1 ? args[0] : args);
       
@@ -71,8 +73,25 @@ class IpcService {
         原始响应: originalResponse,
         标准化响应: response,
         类型: typeof originalResponse,
-        成功: response.success
+        成功: response.success,
+        响应数据: response.data
       });
+      
+      // 特殊处理setDefaultConfig通道
+      if (channel === 'llm:setDefaultConfig') {
+        console.log('设置默认配置响应详情:', JSON.stringify(response));
+        
+        // 检查返回值是否为布尔值true
+        if (originalResponse === true || (typeof originalResponse === 'object' && originalResponse.success === true)) {
+          return (typeof originalResponse === 'object' ? originalResponse.data : true) as T;
+        }
+      }
+      
+      // 特殊处理testApiKey通道，直接返回原始响应
+      if (channel === 'llm:testApiKey') {
+        console.log('测试API密钥返回原始数据:', originalResponse);
+        return originalResponse as T;
+      }
       
       if (!response.success) {
         console.error(`IPC 调用错误 [${channel}]: ${response.error}`);

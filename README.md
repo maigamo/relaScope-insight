@@ -490,3 +490,99 @@ yarn build:all
   - 优化了表单和列表视图的移动设备支持
   - Optimized form and list views for mobile device support
   - モバイルデバイスサポートのためのフォームとリストビューの最適化
+
+## Electron应用图标规格指南
+
+### 图标尺寸要求
+
+对于Electron应用程序，需要准备多种尺寸的图标以适应不同平台和用途：
+
+| 平台 | 图标格式 | 尺寸要求 | 用途 |
+|------|---------|---------|------|
+| Windows | ICO | 16x16, 32x32, 48x48, 256x256 | 应用图标, 任务栏 |
+| macOS | ICNS | 16x16, 32x32, 64x64, 128x128, 256x256, 512x512, 1024x1024 | Dock, 应用图标 |
+| Linux | PNG | 16x16, 32x32, 48x48, 64x64, 128x128, 256x256 | 应用图标, 桌面入口 |
+
+### 图标文件放置位置
+
+应用图标应放置在以下位置：
+
+```
+src/renderer/assets/icons/
+```
+
+推荐的文件结构：
+
+```
+icons/
+  ├── icon.png        # 主图标 (1024x1024)
+  ├── icon.ico        # Windows图标
+  ├── icon.icns       # macOS图标
+  └── png/
+       ├── 16x16.png
+       ├── 32x32.png
+       ├── 48x48.png
+       ├── 64x64.png
+       ├── 128x128.png
+       ├── 256x256.png
+       └── 512x512.png
+```
+
+### 创建图标的工具
+
+1. **Electron Icon Generator**：使用以下命令创建所有平台所需的图标
+   ```
+   npm install -g electron-icon-maker
+   electron-icon-maker --input=icon.png --output=./icons
+   ```
+
+2. **在线转换工具**
+   - [iConvert](https://iconverticons.com/online/)
+   - [Icon Converter](https://www.icoconverter.com/)
+   - [Img2Go](https://www.img2go.com/)
+
+3. **图形软件**
+   - Adobe Photoshop
+   - GIMP
+   - Sketch
+
+### 图标设计建议
+
+- 使用简洁、辨识度高的设计
+- 确保在小尺寸下仍然清晰可辨
+- 使用适当的颜色对比度
+- 在不同背景下测试可见度
+- 保持图标风格与应用程序界面一致
+
+### 在Electron中使用图标
+
+在`src/main/index.ts`中设置应用图标：
+
+```typescript
+mainWindow = new BrowserWindow({
+  // ...其他配置
+  icon: path.join(__dirname, '../renderer/assets/icons/icon.png'),
+});
+```
+
+### 打包时设置图标
+
+在`electron-builder`配置中指定图标：
+
+```json
+{
+  "build": {
+    "appId": "com.yourcompany.yourapp",
+    "productName": "YourApp",
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icons"
+    }
+  }
+}
+```

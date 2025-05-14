@@ -14,4 +14,5 @@ export { ProfileService } from './profile.service';
 export { QuoteService } from './quote.service';
 export { ExperienceService } from './experience.service';
 export { AnalysisService } from './analysis.service';
-export { HexagonService } from './hexagon.service'; 
+export { HexagonService } from './hexagon.service';
+export { LLMService } from './llm.service'; 

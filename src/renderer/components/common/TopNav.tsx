@@ -11,25 +11,38 @@ import {
   Badge,
   Text,
   HStack,
-  MenuDivider,
-  Button,
-  Icon
+  Button
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
-  faMoon,
-  faSun,
   faGlobe,
-  faUser,
-  faCog,
   faBell,
-  faSignOutAlt,
-  faLanguage
+  faLanguage,
+  faWindowMinimize,
+  faWindowMaximize,
+  faWindowRestore,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import { AppContext } from '../../contexts/AppContext';
+
+// 声明全局electronAPI类型
+declare global {
+  interface Window {
+    electronAPI: {
+      send: (channel: string, data?: any) => void;
+      invoke: <T = any>(channel: string, data?: any) => Promise<{
+        success: boolean;
+        data?: T;
+        error?: string;
+      }>;
+      receive: (channel: string, func: (...args: any[]) => void) => void;
+    };
+    IPC_CONSTANTS: any;
+  }
+}
 
 // 顶部导航组件接口
 interface TopNavProps {
@@ -42,6 +55,19 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
   const { t, i18n } = useTranslation();
   const { state, setLanguage } = useContext(AppContext);
   const { language } = state;
+
+  // 窗口控制函数
+  const minimizeWindow = () => {
+    window.electronAPI.send('window-control', 'minimize');
+  };
+
+  const maximizeWindow = () => {
+    window.electronAPI.send('window-control', 'maximize');
+  };
+
+  const closeWindow = () => {
+    window.electronAPI.send('window-control', 'close');
+  };
 
   // 语言切换处理
   const handleLanguageChange = (lang: string) => {
@@ -71,6 +97,8 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
       bg={colorMode === 'dark' ? 'gray.800' : '#F0F0F0'}
       boxShadow="none"
       h="60px"
+      className="app-header"
+      sx={{ WebkitAppRegion: 'drag' }} // 使顶部导航栏可拖动窗口
     >
       {/* 移动端菜单按钮 */}
       <IconButton
@@ -80,6 +108,7 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
         onClick={onMenuClick}
         variant="ghost"
         fontSize="xl"
+        sx={{ WebkitAppRegion: 'no-drag' }} // 按钮区域不可拖动
       />
 
       {/* 页面标题 */}
@@ -90,7 +119,7 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
       </Box>
 
       {/* 右侧功能按钮 */}
-      <HStack spacing={3}>
+      <HStack spacing={3} sx={{ WebkitAppRegion: 'no-drag' }}> {/* 按钮区域不可拖动 */}
         {/* 语言选择菜单 */}
         <Menu closeOnSelect>
           <MenuButton
@@ -149,29 +178,43 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
             <MenuItem>通知2: 您有新的分析结果</MenuItem>
           </MenuList>
         </Menu>
-
-        {/* 用户菜单 */}
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="用户菜单"
-            icon={<FontAwesomeIcon icon={faUser} />}
+        
+        {/* 窗口控制按钮 */}
+        <HStack spacing={1} ml={2}>
+          <IconButton
+            aria-label="最小化"
+            icon={<FontAwesomeIcon icon={faWindowMinimize} fontSize="14px" />}
+            size="md"
             variant="ghost"
-            fontSize="lg"
+            borderRadius="md"
+            onClick={minimizeWindow}
+            _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+            w="40px"
+            h="40px"
           />
-          <MenuList>
-            <MenuItem icon={<Icon as={FontAwesomeIcon} icon={faUser} />}>
-              {t('common.profile')}
-            </MenuItem>
-            <MenuItem icon={<Icon as={FontAwesomeIcon} icon={faCog} />}>
-              {t('common.settings')}
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem icon={<Icon as={FontAwesomeIcon} icon={faSignOutAlt} />}>
-              {t('common.logout')}
-            </MenuItem>
-          </MenuList>
-        </Menu>
+          <IconButton
+            aria-label="最大化"
+            icon={<FontAwesomeIcon icon={faWindowMaximize} fontSize="14px" />}
+            size="md"
+            variant="ghost"
+            borderRadius="md"
+            onClick={maximizeWindow}
+            _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+            w="40px"
+            h="40px"
+          />
+          <IconButton
+            aria-label="关闭"
+            icon={<FontAwesomeIcon icon={faTimes} fontSize="16px" />}
+            size="md"
+            variant="ghost"
+            borderRadius="md"
+            onClick={closeWindow}
+            _hover={{ bg: 'red.500', color: 'white' }}
+            w="40px"
+            h="40px"
+          />
+        </HStack>
       </HStack>
     </Flex>
   );
