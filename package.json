@@ -15,7 +15,6 @@
     "app:dev": "concurrently -k \"npm run dev\" \"node scripts/wait.js && npm run electron:dev\"",
     "app:prod": "concurrently \"npm run build\" \"npm run electron:prod\"",
     "package": "npm run build && npm run build:main && electron-builder",
-    "postinstall": "electron-builder install-app-deps",
     "test": "jest",
     "lint": "eslint . --ext .ts,.tsx"
   },
