@@ -1,0 +1,253 @@
+/* 提供商详情面板样式 */
+.provider-detail-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background-color: transparent;
+  overflow-y: auto;
+}
+
+/* 提供商标题区域 */
+.provider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.provider-title {
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* API密钥配置区域 */
+.provider-api {
+  margin-bottom: 20px;
+}
+
+.api-key-input {
+  margin: 10px 0;
+}
+
+.api-key-tips {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #999;
+}
+
+.apply-key-link {
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.multiple-keys-tip {
+  color: #999;
+}
+
+.api-key-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* API地址配置区域 */
+.api-url-collapse {
+  margin-top: 15px;
+}
+
+.api-url-input {
+  margin-bottom: 5px;
+}
+
+.api-url-tip {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+/* 模型区域 */
+.models-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  background-color: transparent;
+}
+
+.models-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.models-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.models-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  background-color: transparent;
+  padding: 4px 2px;
+}
+
+.models-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+
+/* 模型卡片样式 */
+.model-card {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  border: 1px solid rgba(240, 240, 240, 0.8);
+  background-color: transparent;
+}
+
+.model-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.model-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.model-card-title {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.model-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.model-card-content {
+  padding: 14px 16px;
+  background-color: transparent;
+  border-radius: 0 0 8px 8px;
+}
+
+.model-param-item {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 快速添加模型样式 */
+.quick-add-model-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.quick-add-model-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-add-model-item:hover {
+  background-color: #f5f5f5;
+}
+
+.quick-add-model-item.selected {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.model-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.model-id {
+  color: #999;
+  font-size: 12px;
+}
+
+.model-tokens {
+  color: #666;
+  font-size: 12px;
+}
+
+/* 滚动条样式 */
+.provider-detail-panel::-webkit-scrollbar,
+.models-container::-webkit-scrollbar,
+.quick-add-model-list::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+.provider-detail-panel::-webkit-scrollbar-thumb,
+.models-container::-webkit-scrollbar-thumb,
+.quick-add-model-list::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+
+.provider-detail-panel::-webkit-scrollbar-thumb:hover,
+.models-container::-webkit-scrollbar-thumb:hover,
+.quick-add-model-list::-webkit-scrollbar-thumb:hover {
+  background-color: #bfbfbf;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .provider-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .provider-actions {
+    align-self: flex-end;
+  }
+  
+  .models-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 修改divider颜色使其更协调 */
+.provider-detail-panel .ant-divider {
+  border-color: rgba(240, 240, 240, 0.6);
+  margin: 16px 0;
+}
+
+/* 确保整个详情面板的背景透明 */
+.provider-api, 
+.api-key-section,
+.models-header,
+.models-title,
+.models-actions {
+  background-color: transparent;
+} 

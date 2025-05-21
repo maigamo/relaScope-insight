@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Heading,
@@ -21,6 +21,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import LLMSettings from '../../components/settings/llm';
+import { updateAppTitle, restoreAppTitle } from '../../components/settings/utils/domUtils';
 
 // 动画配置
 const container = {
@@ -58,6 +59,12 @@ const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const [activeNavItem, setActiveNavItem] = useState<string>('llm');
 
+  // 设置页面标题
+  useEffect(() => {
+    updateAppTitle('设置');
+    return () => restoreAppTitle();
+  }, []);
+
   // 导航项数据
   const navItems: NavItem[] = [
     {
@@ -87,7 +94,7 @@ const SettingsPage: React.FC = () => {
     {
       id: 'llm',
       icon: faRobot,
-      label: t('settings.llm'),
+      label: '模型服务',
       component: <LLMSettings />
     },
     {
@@ -97,6 +104,16 @@ const SettingsPage: React.FC = () => {
       component: <UnderDevelopment title={t('settings.privacy')} />
     }
   ];
+
+  // 切换导航项
+  const handleNavItemClick = (itemId: string) => {
+    setActiveNavItem(itemId);
+    // 根据点击的导航项更新页面标题
+    const selectedItem = navItems.find(item => item.id === itemId);
+    if (selectedItem) {
+      updateAppTitle(selectedItem.label);
+    }
+  };
 
   // 样式变量
   const sidebarBg = useColorModeValue('gray.50', 'gray.900');
@@ -114,11 +131,12 @@ const SettingsPage: React.FC = () => {
       h="calc(100vh - 80px)" // 减去顶部导航栏的高度
       overflow="hidden"
     >
-      <Heading as="h1" size="lg" mb={6}>
+      {/* 隐藏设置标题 */}
+      <Heading as="h1" size="lg" mb={6} display="none">
         {t('navigation.settings')}
       </Heading>
 
-      <Flex h="calc(100% - 40px)">
+      <Flex h="100%">
         {/* 左侧导航栏 */}
         <Box
           as="nav"
@@ -143,7 +161,7 @@ const SettingsPage: React.FC = () => {
                 color={activeNavItem === item.id ? activeItemColor : 'inherit'}
                 _hover={{ bg: activeNavItem !== item.id ? hoverBg : undefined }}
                 transition="all 0.2s"
-                onClick={() => setActiveNavItem(item.id)}
+                onClick={() => handleNavItemClick(item.id)}
                 display="flex"
                 alignItems="center"
               >

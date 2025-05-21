@@ -1,0 +1,192 @@
+/* 提供商详情面板样式 */
+.provider-detail-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 空状态提示 */
+.empty-provider-tip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  font-size: 16px;
+  color: #999;
+}
+
+/* 标题区域 */
+.provider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.provider-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.provider-name-link {
+  color: #1890ff;
+  transition: color 0.3s;
+}
+
+.provider-name-link:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+.provider-enabled {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 分隔线 */
+.section-divider {
+  margin: 16px 0;
+  background-color: #f0f0f0;
+}
+
+/* API密钥配置区域 */
+.api-key-section {
+  margin-bottom: 20px;
+}
+
+.api-key-input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.api-key-input {
+  flex: 1;
+}
+
+.api-key-tips {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.apply-key-link {
+  color: #1890ff;
+}
+
+.multiple-keys-tip {
+  color: #999;
+}
+
+/* API地址配置区域 */
+.api-url-collapse {
+  margin-bottom: 20px;
+}
+
+.api-url-collapse .ant-collapse-header {
+  padding: 0 !important;
+}
+
+.api-url-collapse .ant-collapse-content-box {
+  padding: 16px 0 !important;
+}
+
+.api-url-input {
+  margin-bottom: 8px;
+}
+
+.api-url-tip {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 模型配置区域 */
+.models-section {
+  margin-top: 16px;
+}
+
+.models-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.model-search-input {
+  width: 240px;
+}
+
+.models-list {
+  margin-bottom: 24px;
+}
+
+.empty-models-tip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  color: #999;
+}
+
+.models-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* 模型卡片样式 */
+.model-card {
+  margin-bottom: 16px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  border: none;
+}
+
+.model-card-expanded {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.model-card .ant-card-body {
+  padding: 12px 16px;
+}
+
+.model-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.model-card-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.model-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.model-card-actions .ant-btn {
+  padding: 0 8px;
+}
+
+.model-card-content {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.model-param-item {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.model-param-item:last-child {
+  margin-bottom: 0;
+} 

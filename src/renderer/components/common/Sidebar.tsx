@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   VStack,
@@ -25,6 +25,16 @@ import {
   faShapes
 } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation } from 'react-router-dom';
+import { updateAppTitle } from '../settings/utils/domUtils';
+
+// 导航项数据接口
+interface NavItem {
+  id: string;
+  icon: any;
+  label: string;
+  to?: string;
+  onClick?: () => void;
+}
 
 interface SidebarItemProps {
   icon: any;
@@ -32,6 +42,7 @@ interface SidebarItemProps {
   isActive?: boolean;
   onClick?: () => void;
   to?: string;
+  onNavClick?: (label: string) => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -39,11 +50,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   label,
   isActive = false,
   onClick,
-  to
+  to,
+  onNavClick
 }) => {
   const activeBg = useColorModeValue('gray.100', 'gray.700');
   const iconColor = useColorModeValue('gray.600', 'gray.300');
   const activeIconColor = useColorModeValue('blue.500', 'blue.300');
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+    if (onNavClick) {
+      onNavClick(label);
+    }
+  };
 
   const content = (
     <Box
@@ -51,7 +72,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       px={4}
       py={3}
       cursor="pointer"
-      onClick={onClick}
+      onClick={handleClick}
       bg={isActive ? activeBg : 'transparent'}
       _hover={{ bg: activeBg }}
       w="100%"
@@ -81,7 +102,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   return (
     <Tooltip label={label} placement="right" hasArrow>
       {to ? (
-        <Box as={Link} to={to} w="100%" _hover={{ textDecoration: 'none' }}>
+        <Box as={Link} to={to} w="100%" _hover={{ textDecoration: 'none' }} onClick={() => onNavClick && onNavClick(label)}>
           {content}
         </Box>
       ) : (
@@ -114,25 +135,33 @@ const Sidebar: React.FC = () => {
   };
 
   const activeItem = getActiveItem();
+
+  // 更新页面标题
+  useEffect(() => {
+    const navItem = [...mainItems, ...analysisItems, ...bottomItems].find(item => item.id === activeItem);
+    if (navItem) {
+      updateAppTitle(navItem.label);
+    }
+  }, [activeItem]);
   
   // 分组1: 主要功能
-  const mainItems = [
+  const mainItems: NavItem[] = [
     { id: 'dashboard', icon: faHome, label: t('navigation.dashboard'), to: '/dashboard' },
-    { id: 'profiles', icon: faUser, label: t('navigation.profiles'), to: '/profiles' },
-    { id: 'quotes', icon: faCommentDots, label: t('navigation.quotes'), to: '/quotes' },
-    { id: 'experiences', icon: faHistory, label: t('navigation.experiences'), to: '/experiences' }
+    { id: 'profiles', icon: faUser, label: '用户画像', to: '/profiles' },
+    { id: 'quotes', icon: faCommentDots, label: '语录', to: '/quotes' },
+    { id: 'experiences', icon: faHistory, label: '人生经历', to: '/experiences' }
   ];
 
   // 分组2: 分析和可视化
-  const analysisItems = [
-    { id: 'analysis', icon: faChartPie, label: t('navigation.analysis'), to: '/analysis' },
-    { id: 'hexagon', icon: faShapes, label: t('hexagonModel.title'), to: '/hexagon' },
-    { id: 'insights', icon: faBrain, label: t('navigation.insights'), to: '/insights' },
+  const analysisItems: NavItem[] = [
+    { id: 'analysis', icon: faChartPie, label: '分析', to: '/analysis' },
+    { id: 'hexagon', icon: faShapes, label: '六边形模型', to: '/hexagon' },
+    { id: 'insights', icon: faBrain, label: '洞察', to: '/insights' },
     { id: 'network', icon: faProjectDiagram, label: t('navigation.network'), to: '/network' }
   ];
 
   // 底部项目: 设置和暗模式
-  const bottomItems = [
+  const bottomItems: NavItem[] = [
     { id: 'settings', icon: faCog, label: t('navigation.settings'), to: '/settings' },
     { 
       id: 'theme', 
@@ -142,11 +171,10 @@ const Sidebar: React.FC = () => {
     }
   ];
 
-  // 控制台输出当前活动项和路径，便于调试
-  React.useEffect(() => {
-    console.log('当前路径:', location.pathname);
-    console.log('当前活动项:', activeItem);
-  }, [location.pathname, activeItem]);
+  // 处理导航项点击
+  const handleNavItemClick = (label: string) => {
+    updateAppTitle(label);
+  };
 
   return (
     <Box
@@ -169,6 +197,7 @@ const Sidebar: React.FC = () => {
             label={item.label}
             isActive={activeItem === item.id}
             to={item.to}
+            onNavClick={handleNavItemClick}
           />
         ))}
 
@@ -182,6 +211,7 @@ const Sidebar: React.FC = () => {
             label={item.label}
             isActive={activeItem === item.id}
             to={item.to}
+            onNavClick={handleNavItemClick}
           />
         ))}
       </VStack>
@@ -197,6 +227,7 @@ const Sidebar: React.FC = () => {
             isActive={activeItem === item.id && !item.onClick}
             to={item.to}
             onClick={item.onClick}
+            onNavClick={handleNavItemClick}
           />
         ))}
       </VStack>

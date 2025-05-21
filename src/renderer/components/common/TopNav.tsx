@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Flex,
   Box,
@@ -27,6 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import { AppContext } from '../../contexts/AppContext';
+import { useLocation } from 'react-router-dom';
 
 // 声明全局electronAPI类型
 declare global {
@@ -41,6 +42,7 @@ declare global {
       receive: (channel: string, func: (...args: any[]) => void) => void;
     };
     IPC_CONSTANTS: any;
+    currentAppTitle?: string;
   }
 }
 
@@ -55,6 +57,35 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
   const { t, i18n } = useTranslation();
   const { state, setLanguage } = useContext(AppContext);
   const { language } = state;
+  const [pageTitle, setPageTitle] = useState<string>(t('app.title'));
+  const location = useLocation();
+
+  // 监听页面标题变化
+  useEffect(() => {
+    const handleTitleChange = () => {
+      if (window.currentAppTitle) {
+        setPageTitle(window.currentAppTitle);
+      } else {
+        setPageTitle(t('app.title'));
+      }
+    };
+
+    // 首次加载时检查标题
+    handleTitleChange();
+
+    // 设置定时监听以捕获标题变化
+    const titleObserver = setInterval(handleTitleChange, 300);
+
+    // 页面路径变化时重置标题
+    const resetTitle = () => {
+      window.currentAppTitle = undefined;
+      setPageTitle(t('app.title'));
+    };
+
+    return () => {
+      clearInterval(titleObserver);
+    };
+  }, [t, location.pathname]);
 
   // 窗口控制函数
   const minimizeWindow = () => {
@@ -113,9 +144,16 @@ const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
 
       {/* 页面标题 */}
       <Box flex={1} ml={{ base: 4, md: 0 }}>
-        <Text fontWeight="bold" fontSize="lg">
-          {t('app.title')}
-        </Text>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          key={pageTitle}
+        >
+          <Text fontWeight="bold" fontSize="lg" id="app-title-text">
+            {pageTitle}
+          </Text>
+        </motion.div>
       </Box>
 
       {/* 右侧功能按钮 */}
